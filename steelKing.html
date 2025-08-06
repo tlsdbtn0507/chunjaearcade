@@ -25,6 +25,9 @@
     </div>
   </div>
   <script>
+    const supabaseUrl = 'https://xgxajgqqqirzhohqwtyc.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneGFqZ3FxcWlyemhvaHF3dHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQyOTc4MjQsImV4cCI6MjA2OTg3MzgyNH0.atWmo_9wUpEZFOjuPX0zeXRwIh2UVtI5yoJOF9BKBOo';
+    const client = supabase.createClient(supabaseUrl, supabaseKey);
 
     const STEP = 20;
     const START_POS = 280;
@@ -111,8 +114,17 @@
       modalOverlay.style.display = 'flex';
     }
 
+    const isNicknameValid = (nickname) => {
+      const regex = /^[a-zA-Z]{1,12}$/;
+      return regex.test(nickname);
+    }
+
     const saveResult = async (time) => {
       const userName = document.getElementById('nickname').value.trim();
+      if (!isNicknameValid(userName)) {
+        alert('닉네임은 영문자 1~12자로 입력해주세요!');
+        return;
+      }
       if (!userName) {
         alert('닉네임을 입력해주세요!');
         return;
@@ -123,9 +135,7 @@
           .from('steelKing')
           .insert([{ userName:userName, userScore:time }])
           .select();
-        if (error) {
-          throw error;  
-        }
+
         showRanking();
       } catch (error) {
         modalContent.innerHTML =
