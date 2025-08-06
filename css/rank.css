@@ -5,6 +5,7 @@ body {
   background: #8b2d19;
   font-family: "Press Start 2P", monospace;
   overflow: hidden;
+  background-image: url("../src/backgroundBrick.png");
 }
 .container {
   width: 100vw;
@@ -117,6 +118,5 @@ body::before {
   right: 0;
   bottom: 0;
   z-index: -1;
-  background: url("/src/backgroundBrick.png");
   opacity: 1;
 }
