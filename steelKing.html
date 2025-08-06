@@ -24,10 +24,10 @@
       <div class="modal" id="modalContent"></div>
     </div>
   </div>
-
+  <script src="env.js"></script>
   <script>
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneGFqZ3FxcWlyemhvaHF3dHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQyOTc4MjQsImV4cCI6MjA2OTg3MzgyNH0.atWmo_9wUpEZFOjuPX0zeXRwIh2UVtI5yoJOF9BKBOo';
-    const supabaseUrl = 'https://xgxajgqqqirzhohqwtyc.supabase.co';
+    const supabaseKey = ENV.SUPABASE_KEY;
+    const supabaseUrl = ENV.SUPABASE_URL;
     const client = supabase.createClient(supabaseUrl, supabaseKey);
 
     const STEP = 20;
