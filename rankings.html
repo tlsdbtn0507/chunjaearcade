@@ -9,16 +9,27 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <title>랭킹 보드</title>
   <style>
-        body {
+    body {
       margin: 0;
       background: url('./src/backgroundBrick.png') repeat;
       font-family: 'Courier New', monospace;
+      display: grid;
+      align-items: center;
       color: white;
     }
-
+    .ranking-header {
+      background-color: #000;
+      color: #fff;
+      font-family: 'Press Start 2P', cursive;
+      text-align: center;
+      padding: 20px;
+      font-size: 1rem;
+      border-bottom: 2px solid #444;
+      width: 80%;
+    }
     .leaderboard-container {
-      width: 900px;
-      height: 500px;
+      width: 80%;
+      height: 80vh;
       margin: 60px auto;
       background: #000;
       border-radius: 16px;
@@ -42,10 +53,10 @@
       animation: scroll 15s linear infinite;
     }
 
-    @keyframes scroll {
+    /* @keyframes scroll {
       0% { top: 0; }
       100% { top: -100%; }
-    }
+    } */
 
     .leaderboard-table th,
     .leaderboard-table td {
@@ -65,14 +76,14 @@
 
     .back-button {
       position: fixed;
-      bottom: 40px;
-      right: 40px;
-      background: url('./src/back_button.png') no-repeat center center;
+      bottom: 10%;
+      right: 10%;
+      background: url('./src/toHomeBtn.png') no-repeat center center;
       background-size: cover;
-      width: 60px;
-      height: 60px;
+      width: 5vw;
+      height: 10vh;
       border: none;
-      border-radius: 50%;
+      /* border-radius: 50%; */
       cursor: pointer;
     }
   </style>
@@ -82,6 +93,9 @@
 </head>
 <body>
   <div class="leaderboard-container">
+    <div class="ranking-header">
+      Rankings of Steel King Kim Steel
+    </div>
     <table class="leaderboard-table">
       <thead>
         <tr>
@@ -91,27 +105,94 @@
           <th>DATE</th>
         </tr>
       </thead>
-      <tbody>
-        <tr><td>1ST</td> <td>다섯글자야</td><td>3'46".07</td><td>1130913</td></tr>
-        <tr><td>2ND</td> <td>열글자이상이야좀많아</td><td>0'03".12</td><td>1090000</td></tr>
-        <tr><td>3RD</td> <td>ABA</td><td>0'03".12</td><td>1080000</td></tr>
-        <tr><td>4TH</td> <td>ACA</td><td>3'46".09</td><td>1072775</td></tr>
-        <tr><td>5TH</td> <td>ADA</td><td>0'03".12</td><td>1070000</td></tr>
-        <tr><td>6TH</td> <td>AAA</td><td>0'03".12</td><td>1060000</td></tr>
-        <tr><td>7TH</td> <td>AAC</td><td>0'03".12</td><td>1050000</td></tr>
-        <tr><td>8TH</td> <td>AAA</td><td>0'03".12</td><td>1040000</td></tr>
-        <tr><td>9TH</td> <td>CCC</td><td>0'03".12</td><td>1030000</td></tr>
-        <tr><td>10TH</td><td>BAC</td><td>0'03".12</td><td>1020000</td></tr>
+      <tbody class="ranking-table-body" id="rankingBody">
+        <!-- 랭킹 데이터가 여기에 추가됩니다 -->
       </tbody>
     </table>
   </div>
 
   <!-- 뒤로가기 버튼 -->
-  <button class="back-button" onclick="window.history.back()"></button>
+  <button class="back-button" onclick="goHome()"></button>
+  <script src="env.js"></script>
   <script>
-    const tbody = document.getElementById('rankingBody');
-    const clone = tbody.cloneNode(true);
-    document.getElementById('rankingTable').appendChild(clone);
+    const supabaseKey = ENV.SUPABASE_KEY;
+    const supabaseUrl = ENV.SUPABASE_URL;
+    const client = supabase.createClient(supabaseUrl, supabaseKey);
+    
+    // const tbody = document.getElementById('rankingBody');
+    // const clone = tbody.cloneNode(true);
+    // document.getElementById('rankingTable').appendChild(clone);
+
+    const getOrdinalSuffix = (rank) => {
+      const j = rank % 10, k = rank % 100;
+      if (j === 1 && k !== 11) return `${rank}st`;
+      if (j === 2 && k !== 12) return `${rank}nd`;
+      if (j === 3 && k !== 13) return `${rank}rd`;
+      return `${rank}th`;
+    };
+
+    const assignRanks = (players) => {
+      players.sort((a, b) => a.time - b.time);
+      let rank = 1, prevTime = null, sameRankCount = 0;
+      return players.map((player) => {
+        if (player.time === prevTime) {
+          sameRankCount++;
+        } else {
+          rank += sameRankCount;
+          sameRankCount = 1;
+        }
+        prevTime = player.time;
+        return { ...player, rankText: getOrdinalSuffix(rank) };
+      });
+    };
+
+    const addRow = (stand, name, time, date) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${stand}</td>
+        <td>${name}</td>
+        <td>${time}</td>
+        <td>${date}</td>
+      `;
+      document.querySelector(".ranking-table-body").appendChild(row);
+    };
+
+    const fetchRankings = async (game) => {
+      const { data, error } = await client
+        .from(game)
+        .select('*')
+        .order('userScore', { ascending: true });
+
+      if (error) {
+        console.error("데이터 불러오기 실패", error);
+        return;
+      }
+
+      const dataArr = data.map(item => {
+        const d = new Date(item.created_at);
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        let hours = d.getHours();
+        const minutes = String(d.getMinutes()).padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        if (hours === 0) hours = 12;
+
+        return {
+          name: item.userName,
+          time: item.userScore,
+          timeText: `${item.userScore}초`,
+          date: `${yyyy}. ${mm}. ${dd}. ${ampm} ${String(hours).padStart(2, '0')}:${minutes}`
+        };
+      });
+
+      const ranked = assignRanks(dataArr);
+      ranked.forEach(r => addRow(r.rankText, r.name, r.timeText, r.date));
+    };
+
+    fetchRankings("steelKing"); // or catchMe, reactionRateTest 등
+    const goHome = () => window.location.href = 'index.html';
   </script>
 </body>
 </html>
