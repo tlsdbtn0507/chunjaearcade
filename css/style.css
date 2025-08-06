@@ -1,0 +1,107 @@
+/* 기본 */
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  background-image: url("../src/backgroundBrick.png");
+  /* background-size: auto; */
+  background-repeat: repeat;
+  background-size: contain; 
+}
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Press Start 2P", "Courier New", Courier, monospace;
+  color: #fff;
+}
+
+/* 앵커가 파란 밑줄로 보이는 현상 방지 (혹시 카드에 링크 넣을 때 대비) */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* 타이틀 */
+.arcade-title {
+  margin: 60px auto 10%;
+  width: min(800px, 92vw);
+  background: #22160f;
+  border-radius: 30px;
+  text-align: center;
+  padding: 30px 0 20px;
+  color: #fff;
+  font-size: clamp(24px, 5vw, 48px);
+  letter-spacing: 6px;
+  box-shadow: 0 8px 0 #0008;
+}
+
+/* 카드 그리드 */
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px 60px;
+  width: min(900px, 92vw);
+  margin: 0 auto;
+}
+
+/* 반응형: 모바일 한 줄 */
+@media (max-width: 720px) {
+  .game-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+/* 카드 */
+.game-card {
+  background: #22160f;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  padding: 24px 32px;
+  color: #fff;
+  min-height: 160px;
+  box-shadow: 0 4px 0 #0008;
+}
+
+/* 썸네일 */
+.game-img {
+  width: 100px;
+  height: 100px;
+  background: #fff; /* 필요 시 이미지로 교체 */
+  border-radius: 10px;
+  margin-right: 32px;
+  flex-shrink: 0;
+}
+
+/* 정보 영역 */
+.game-info {
+  flex: 1;
+}
+
+.game-title {
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  letter-spacing: 2px;
+  line-height: 1.4;
+}
+
+.game-desc {
+  font-size: 13px;
+  color: #ccc;
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+
+.game-level {
+  font-size: 18px;
+}
+
+.star {
+  color: gold;
+  font-size: 20px;
+  margin-left: 4px;
+}

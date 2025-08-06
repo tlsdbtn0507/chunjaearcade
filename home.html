@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>CHUNJAE ARCADE</title>
+
+    <!-- 외부 CSS 연동 -->
+    <link rel="stylesheet" href="./css/style.css" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="content-wrapper">
+      <div class="arcade-title">CHUNJAE ARCADE</div>
+
+      <div class="game-grid">
+        <div class="game-card" onclick="gameToGo('steelKing')">
+          <div class="game-img"></div>
+          <div class="game-info steelKing">
+            <div class="game-title">Steel King<br />Steel Kim</div>
+            <div class="game-desc">“버튼을 재빨리 눌러 도무에 성공하세요”</div>
+            <div class="game-level">
+              level <span class="star">★</span><span class="star">★</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="game-card" onclick="gameToGo('ddongpihagi')">
+          <div class="game-img"></div>
+          <div class="game-info ddongpihagi">
+            <div class="game-title">ddong pihagi</div>
+            <div class="game-desc">
+              “이것은 생존의 문제다...<br />떨어지는 그것을 피하라!”
+            </div>
+            <div class="game-level">level <span class="star">★</span></div>
+          </div>
+        </div>
+
+        <div class="game-card" onclick="gameToGo('reactionRateTest')">
+          <div class="game-img"></div>
+          <div class="game-info reactionRateTest">
+            <div class="game-title">Reaction<br />Rate Test</div>
+            <div class="game-desc">“반응속도 테스트”</div>
+            <div class="game-level">
+              level <span class="star">★</span><span class="star">★</span
+              ><span class="star">★</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="game-card" onclick="gameToGo('catchMe')">
+          <div class="game-img"></div>
+          <div class="game-info catchMe">
+            <div class="game-title">Catch me<br />If you can</div>
+            <div class="game-desc">“나 잡아봐라?”</div>
+            <div class="game-level">
+              level <span class="star">★</span><span class="star">★</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+
+
+      const gameToGo = (gameName) => {
+        window.location.href = `rank.html?game=${gameName}`;
+      }
+
+    </script>
+  </body>
+</html>

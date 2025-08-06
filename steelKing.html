@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <title>도루왕 김도루</title>
+  <link rel="stylesheet" href="./css/steelKing.css" />
+</head>
+<body>
+  <div class="totalBody">
+    <div class="game-container">
+      <h1>도루왕 김도루</h1>
+      <p class="subtitle">6초 안에 도루를 성공하세요!</p>
+      <div class="base start"></div>
+      <div class="base end"></div>
+      <img id="runner" src="./src/haemin.png" />
+      <div class="info" id="status" data-result=""></div>
+      <button class="button" onclick="handleTap()">달리기</button>
+    </div>
+
+    <!-- 모달 -->
+    <div class="modal-overlay" id="modalOverlay">
+      <div class="modal" id="modalContent"></div>
+    </div>
+  </div>
+
+  <script>
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneGFqZ3FxcWlyemhvaHF3dHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQyOTc4MjQsImV4cCI6MjA2OTg3MzgyNH0.atWmo_9wUpEZFOjuPX0zeXRwIh2UVtI5yoJOF9BKBOo';
+    const supabaseUrl = 'https://xgxajgqqqirzhohqwtyc.supabase.co';
+    const client = supabase.createClient(supabaseUrl, supabaseKey);
+
+    const STEP = 20;
+    const START_POS = 280;
+    const END_POS = 960;
+    const RUN_IMAGES = ["./src/haemin.png", "./src/haemin1.png"];
+    const FINAL_IMAGE = "./src/haemin_s.png";
+
+    const runner = document.getElementById('runner');
+    const statusDiv = document.getElementById('status');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalContent = document.getElementById('modalContent');
+
+    let position = START_POS;
+    let running = false;
+    let startTime = null;
+    let timer = null;
+    let timeout = null;
+    let bestTime = null;
+    let imageToggle = 0;
+
+    function updateRunner() {
+      runner.style.left = position + 'px';
+
+      if (position >= END_POS - 2) {
+        runner.src = FINAL_IMAGE;
+      } else {
+        imageToggle = 1 - imageToggle;
+        runner.src = RUN_IMAGES[imageToggle];
+      }
+    }
+
+    function handleTap() {
+      const isDone = statusDiv.getAttribute('data-result');
+      if (!running && isDone === '') {
+        position = START_POS;
+        updateRunner();
+        running = true;
+        startTime = Date.now();
+        statusDiv.innerHTML = `⏱ 타이머: 0.00s`;
+        statusDiv.setAttribute('data-result', '');
+
+        timer = setInterval(() => {
+          const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
+          statusDiv.innerHTML = `⏱ 타이머: ${elapsed}s`;
+        }, 100);
+
+        timeout = setTimeout(() => {
+          if (position < END_POS - 2) {
+            endGame('아웃!', false);
+          }
+        }, 6000);
+      } else if (running) {
+        position += STEP;
+        if (position >= END_POS) {
+          position = END_POS;
+          updateRunner();
+          const time = ((Date.now() - startTime) / 1000).toFixed(2);
+          endGame('세이프!', time);
+        } else {
+          updateRunner();
+        }
+      }
+    }
+
+    function endGame(result, time) {
+      clearInterval(timer);
+      clearTimeout(timeout);
+      running = false;
+      statusDiv.setAttribute('data-result', result);
+
+      let html = `<div class="result ${result === '세이프!' ? 'safe' : 'out'}">${result}</div>`;
+
+      if (time) {
+        html += `
+          <div>기록: ${time}초</div>
+          <input id="nickname" type="text" placeholder="닉네임을 입력하세요" />
+          <button class="retry" onclick="saveResult(${time})">저장하고 결과보기</button>
+        `;
+      } else {
+        html += `<button class="retry" onclick="reset()">다시하기</button>`;
+      }
+
+      modalContent.innerHTML = html;
+      modalOverlay.style.display = 'flex';
+    }
+
+    const saveResult = async (time) => {
+      const userName = document.getElementById('nickname').value.trim();
+      if (!userName) {
+        alert('닉네임을 입력해주세요!');
+        return;
+      }
+
+      try {
+        const { data, error } = await client
+          .from('steelKing')
+          .insert([{ userName:userName, userScore:time }])
+          .select();
+        if (error) {
+          throw error;  
+        }
+        showRanking();
+      } catch (error) {
+        modalContent.innerHTML =
+        `
+          <div class="result-fail">저장 실패!
+            <p>다시 시도해주세요.</p>
+            <button class="retry" onclick="reset()">다시하기</button>
+          </div>
+        `;
+      }
+    }
+
+    function showRanking() {
+      let html = `
+        <div onclick="reset()">
+          <img class="regame" src="./src/refreshBtn.png" alt="재시작" />
+        </div> 
+        <div class="result safe">도루왕 김도루 
+          </div>
+        <div class="ranking-title">기록 저장이 완료되었습니다</div>
+        <button class="home" onclick="goHome()">홈으로</button>
+        <button class="retry" onclick="goRankings()">랭킹보기</button>
+        `;
+      modalContent.innerHTML = html;
+    }
+
+    function reset() {
+      position = START_POS;
+      updateRunner();
+      statusDiv.innerHTML = '';
+      statusDiv.setAttribute('data-result', '');
+      running = false;
+      modalOverlay.style.display = 'none';
+    }
+
+    const goHome = () => window.location.href = 'home.html';
+    const goRankings = () => window.location.href = 'rankings.html?game=steelKing';
+    
+
+    updateRunner();
+  </script>
+</body>
+</html>

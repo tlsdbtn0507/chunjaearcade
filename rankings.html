@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+    rel="stylesheet"
+  />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <title>랭킹 보드</title>
+  <style>
+        body {
+      margin: 0;
+      background: url('./src/backgroundBrick.png') repeat;
+      font-family: 'Courier New', monospace;
+      color: white;
+    }
+
+    .leaderboard-container {
+      width: 900px;
+      height: 500px;
+      margin: 60px auto;
+      background: #000;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .scroll-wrapper {
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      position: absolute;
+      animation: scroll 15s linear infinite;
+    }
+
+    @keyframes scroll {
+      0% { top: 0; }
+      100% { top: -100%; }
+    }
+
+    .leaderboard-table th,
+    .leaderboard-table td {
+      padding: 12px;
+      font-size: 18px;
+    }
+
+    .leaderboard-table th {
+      color: red;
+      background: #111;
+      position: sticky;
+      top: 0;
+    }
+
+    .leaderboard-table td:nth-child(1) { color: #66ccff; }  /* STAND /
+    .leaderboard-table td:nth-child(3) { color: #ff6666; }  / NAME */
+
+    .back-button {
+      position: fixed;
+      bottom: 40px;
+      right: 40px;
+      background: url('./src/back_button.png') no-repeat center center;
+      background-size: cover;
+      width: 60px;
+      height: 60px;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+  </style>
+
+  </style>
+  </style>
+</head>
+<body>
+  <div class="leaderboard-container">
+    <table class="leaderboard-table">
+      <thead>
+        <tr>
+          <th>STAND</th>
+          <th>NAME</th>
+          <th>TIME</th>
+          <th>DATE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1ST</td> <td>다섯글자야</td><td>3'46".07</td><td>1130913</td></tr>
+        <tr><td>2ND</td> <td>열글자이상이야좀많아</td><td>0'03".12</td><td>1090000</td></tr>
+        <tr><td>3RD</td> <td>ABA</td><td>0'03".12</td><td>1080000</td></tr>
+        <tr><td>4TH</td> <td>ACA</td><td>3'46".09</td><td>1072775</td></tr>
+        <tr><td>5TH</td> <td>ADA</td><td>0'03".12</td><td>1070000</td></tr>
+        <tr><td>6TH</td> <td>AAA</td><td>0'03".12</td><td>1060000</td></tr>
+        <tr><td>7TH</td> <td>AAC</td><td>0'03".12</td><td>1050000</td></tr>
+        <tr><td>8TH</td> <td>AAA</td><td>0'03".12</td><td>1040000</td></tr>
+        <tr><td>9TH</td> <td>CCC</td><td>0'03".12</td><td>1030000</td></tr>
+        <tr><td>10TH</td><td>BAC</td><td>0'03".12</td><td>1020000</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 뒤로가기 버튼 -->
+  <button class="back-button" onclick="window.history.back()"></button>
+  <script>
+    const tbody = document.getElementById('rankingBody');
+    const clone = tbody.cloneNode(true);
+    document.getElementById('rankingTable').appendChild(clone);
+  </script>
+</body>
+</html>

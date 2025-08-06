@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rank</title>
+  </head>
+  <link rel="stylesheet" href="./css/rank.css" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+    rel="stylesheet"
+  />
+  <body>
+    <div class="container">
+      <div class="main-box">
+        <div class="title"></div>
+        <button class="start-btn">game start</button>
+        <div class="ranking-box">
+          <img class="trophy" src="./src/trophy.png" alt="trophy" />
+          <div class="ranking-title">RANKING</div>
+          <div class="ranking-list">
+            1. KSH 4.23sec<br />
+            2. SYS 5.36sec<br />
+            3. YYN 5.87sec
+          </div>
+        </div>
+      </div>
+      <!-- <img
+        class="character"
+        src="https://i.imgur.com/4M7IWwP.png"
+        alt="character"
+      /> -->
+      <button class="arrow-btn">
+        <img
+          class="arrow-img"
+          src="https://cdn-icons-png.flaticon.com/512/271/271220.png"
+          alt="arrow"
+        />
+      </button>
+    </div>
+    <script type="module">
+      const GAME_OBJECTS = [
+        {
+          gameName: "steelKing",
+          title: "Steel King Steel Kim",
+        },
+        {
+          gameName: "catchMe",
+          title: "Catch me If you can",
+        },
+        {
+          gameName: "ddongpihagi",
+          title: "DdongPiHaGi",
+        },
+        {
+          gameName: "reactionRateTest",
+          title: "ReactionRateTest",
+        },
+      ];
+      
+      const gameTitle = document.querySelector(".title");
+      const gameStartBtn = document.querySelector(".start-btn");
+
+      let gameUrl;
+
+      const setTitleOfPage = () => {
+        const urlParam = new URLSearchParams(window.location.search);
+        const game = urlParam.get("game");
+        const {gameName,title} = GAME_OBJECTS.find(gameObj => gameObj.gameName === game);
+        gameUrl = gameName;
+        gameTitle.innerText = title;
+      };
+
+      setTitleOfPage();
+
+      gameStartBtn.addEventListener('click',()=>{
+        window.location.href = gameUrl
+      })
+
+
+    </script>
+  </body>
+</html>
