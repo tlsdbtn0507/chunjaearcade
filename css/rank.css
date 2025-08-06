@@ -119,4 +119,5 @@ body::before {
   bottom: 0;
   z-index: -1;
   opacity: 1;
+  background: url("../src/backgroundBrick.png") ;
 }
