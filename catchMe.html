@@ -16,6 +16,7 @@
                 빠르게 움직이는 버튼들을 잡아보세요!<br>
                 20초 안에 최대한 많이 잡으세요!
             </div>
+            <label for="nickname-input">닉네임은 영어와 12자 이내로 만들어주세요</label>
             <input type="text" class="nickname-input" id="nicknameInput" placeholder="닉네임을 입력하세요" maxlength="10">
             <div class="score" id="score">점수: 0</div>
             <div class="timer" id="timer">시간: 20초</div>
@@ -93,7 +94,7 @@
           }
           isGameRunning = true;
           score = 0;
-          timeLeft = 1;
+          timeLeft = 20;
           startButton.style.display = 'none';
           gameContainer.style.display = 'none';
           gameArea.style.display = 'block';

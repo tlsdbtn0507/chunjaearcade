@@ -108,6 +108,7 @@
       if (time) {
         html += `
           <div>기록: ${time}초</div>
+          <label for="nickname">닉네임은 영어와 12자 이내로 작성해주세요</label>
           <input id="nickname" type="text" placeholder="닉네임을 입력하세요" />
           <button class="retry" onclick="saveResult(${time})">저장하고 결과보기</button>
         `;
