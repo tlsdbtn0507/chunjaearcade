@@ -1,0 +1,381 @@
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+            background-image: url('../src/backgroundBrick.png');
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            color: #4a5568;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #718096;
+            margin-bottom: 40px;
+        }
+
+        .start-screen {
+            display: block;
+        }
+
+        .nickname-screen {
+            display: none;
+        }
+
+        .instruction-screen {
+            display: none;
+        }
+
+        .instruction-list {
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .instruction-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .instruction-number {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .instruction-text {
+            font-size: 1.1rem;
+            color: #4a5568;
+            line-height: 1.5;
+            flex: 1;
+        }
+
+        .instruction-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .instruction-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .game-screen {
+            display: none;
+            min-height: 400px;
+            cursor: pointer;
+            border-radius: 15px;
+            transition: background-color 0.3s ease;
+            position: relative;
+        }
+        
+        .game-info {
+            margin-top: 20px;
+        }
+
+        .game-screen.waiting {
+            background-color: #f56565;
+            color: white;
+        }
+
+        .game-screen.ready {
+            background-color: #48bb78;
+            color: white;
+        }
+
+        .game-screen.clicked {
+            background-color: #667eea;
+            color: white;
+        }
+
+        .result-screen {
+            display: none;
+        }
+
+        .ranking-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            text-align: left;
+        }
+
+        .ranking-title {
+            font-size: 1.3rem;
+            color: #4a5568;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .ranking-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .ranking-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .ranking-rank {
+            font-weight: bold;
+            color: #667eea;
+            min-width: 30px;
+        }
+
+        .ranking-nickname {
+            flex: 1;
+            margin: 0 15px;
+            font-weight: 500;
+        }
+
+        .ranking-score {
+            font-weight: bold;
+            color: #48bb78;
+        }
+
+        .nickname-input {
+            width: 100%;
+            max-width: 300px;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 25px;
+            margin: 20px 0;
+            text-align: center;
+            transition: border-color 0.3s ease;
+        }
+
+        .nickname-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .start-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            font-weight: bold;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .nickname-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .nickname-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .restart-btn {
+
+            background: white;
+            color: linear-gradient(45deg, #667eea, #764ba2);;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin-top: 20px;
+        }
+
+        /* .goresult-btn { */
+            /* background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin-top: 20px;
+        } */
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+        }
+        .goResult-btn {
+            /* background: linear-gradient(45deg, #667eea, #764ba2); */
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin-top: 20px;
+        }
+        .goResult-btn:hover {
+            transform: translateY(-2px);
+        }
+        .clear-btn {
+            background: #f56565;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .clear-btn:hover {
+            background: #e53e3e;
+            transform: translateY(-1px);
+        }
+
+        .emoji {
+            font-size: 4rem;
+            margin: 20px 0;
+        }
+
+        .game-message {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .reaction-time {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 10px 20px;
+            background: #f7fafc;
+            border-radius: 25px;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            margin: 0 15px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .score {
+            font-size: 1.1rem;
+            color: #4a5568;
+            font-weight: bold;
+        }
+
+        .final-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #718096;
+            margin-top: 5px;
+        }
+
+        .attempt-list {
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .attempt-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: #f7fafc;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+        }

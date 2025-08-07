@@ -4,361 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>반응속도 테스트</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #333;
-        }
-
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            padding: 40px;
-            max-width: 600px;
-            width: 90%;
-            text-align: center;
-        }
-
-        .title {
-            font-size: 2.5rem;
-            color: #4a5568;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            color: #718096;
-            margin-bottom: 40px;
-        }
-
-        .start-screen {
-            display: block;
-        }
-
-        .nickname-screen {
-            display: none;
-        }
-
-        .instruction-screen {
-            display: none;
-        }
-
-        .instruction-list {
-            margin: 30px 0;
-            text-align: left;
-        }
-
-        .instruction-item {
-            display: flex;
-            align-items: flex-start;
-            margin: 20px 0;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 12px;
-            border-left: 4px solid #667eea;
-        }
-
-        .instruction-number {
-            background: #667eea;
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            margin-right: 15px;
-            flex-shrink: 0;
-        }
-
-        .instruction-text {
-            font-size: 1.1rem;
-            color: #4a5568;
-            line-height: 1.5;
-            flex: 1;
-        }
-
-        .instruction-btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            font-weight: bold;
-            margin-top: 20px;
-        }
-
-        .instruction-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .game-screen {
-            display: none;
-            min-height: 400px;
-            cursor: pointer;
-            border-radius: 15px;
-            transition: background-color 0.3s ease;
-            position: relative;
-        }
-        
-        .game-info {
-            margin-top: 20px;
-        }
-
-        .game-screen.waiting {
-            background-color: #f56565;
-            color: white;
-        }
-
-        .game-screen.ready {
-            background-color: #48bb78;
-            color: white;
-        }
-
-        .game-screen.clicked {
-            background-color: #667eea;
-            color: white;
-        }
-
-        .result-screen {
-            display: none;
-        }
-
-        .ranking-section {
-            margin-top: 30px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 15px;
-            text-align: left;
-        }
-
-        .ranking-title {
-            font-size: 1.3rem;
-            color: #4a5568;
-            margin-bottom: 15px;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .ranking-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .ranking-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 15px;
-            margin: 5px 0;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .ranking-rank {
-            font-weight: bold;
-            color: #667eea;
-            min-width: 30px;
-        }
-
-        .ranking-nickname {
-            flex: 1;
-            margin: 0 15px;
-            font-weight: 500;
-        }
-
-        .ranking-score {
-            font-weight: bold;
-            color: #48bb78;
-        }
-
-        .nickname-input {
-            width: 100%;
-            max-width: 300px;
-            padding: 12px 20px;
-            font-size: 1.1rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 25px;
-            margin: 20px 0;
-            text-align: center;
-            transition: border-color 0.3s ease;
-        }
-
-        .nickname-input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .start-btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            font-weight: bold;
-        }
-
-        .start-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .nickname-btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 1.1rem;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            margin-top: 10px;
-        }
-
-        .nickname-btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .restart-btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            margin-top: 20px;
-        }
-
-        .restart-btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .clear-btn {
-            background: #f56565;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            font-size: 0.9rem;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            margin-top: 10px;
-        }
-
-        .clear-btn:hover {
-            background: #e53e3e;
-            transform: translateY(-1px);
-        }
-
-        .emoji {
-            font-size: 4rem;
-            margin: 20px 0;
-        }
-
-        .game-message {
-            font-size: 2rem;
-            font-weight: bold;
-            margin: 20px 0;
-        }
-
-        .reaction-time {
-            font-size: 3rem;
-            font-weight: bold;
-            margin: 20px 0;
-        }
-
-        .progress {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding: 10px 20px;
-            background: #f7fafc;
-            border-radius: 25px;
-        }
-
-        .progress-bar {
-            flex: 1;
-            height: 8px;
-            background: #e2e8f0;
-            border-radius: 4px;
-            margin: 0 15px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
-        .score {
-            font-size: 1.1rem;
-            color: #4a5568;
-            font-weight: bold;
-        }
-
-        .final-stats {
-            display: flex;
-            justify-content: space-around;
-            margin: 30px 0;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        .stat-label {
-            font-size: 1rem;
-            color: #718096;
-            margin-top: 5px;
-        }
-
-        .attempt-list {
-            margin: 20px 0;
-            text-align: left;
-        }
-
-        .attempt-item {
-            padding: 10px;
-            margin: 5px 0;
-            background: #f7fafc;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-        }
-    </style>
+    <link rel="stylesheet" href="./css/reaction.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <div class="container">
@@ -369,14 +17,6 @@
             <p class="subtitle">빨간색 화면에서 초록색으로 바뀌면 빠르게 클릭하세요!</p>
             <button class="start-btn" onclick="showNicknameScreen()">테스트 시작하기</button>
             
-            <!-- 랭킹 섹션 -->
-            <div class="ranking-section">
-                <h3 class="ranking-title">🏆 상위 랭킹</h3>
-                <ul class="ranking-list" id="rankingList">
-                    <!-- 랭킹이 여기에 동적으로 표시됩니다 -->
-                </ul>
-                <button class="clear-btn" onclick="clearRankings()">랭킹 초기화</button>
-            </div>
         </div>
 
         <!-- 닉네임 입력 화면 -->
@@ -384,6 +24,7 @@
             <div class="emoji">👤</div>
             <h1 class="title">닉네임 입력</h1>
             <p class="subtitle">테스트에 사용할 닉네임을 입력해주세요!</p>
+            <p class="subtitle">닉네임은 영어 12자 이내로 작성해주세요</p>
             <input type="text" class="nickname-input" id="nicknameInput" placeholder="닉네임을 입력하세요" maxlength="10">
             <br>
             <button class="nickname-btn" id="nicknameBtn" onclick="showInstructionScreen()">다음</button>
@@ -444,23 +85,30 @@
                 </div>
             </div>
 
-            <div class="attempt-list" id="attemptList">
-                <!-- 시도 기록이 여기에 표시됩니다 -->
-            </div>
+            <!-- <div class="attempt-list" id="attemptList">
+                시도 기록이 여기에 표시됩니다
+            </div> -->
 
             <button class="restart-btn" onclick="restartGame()">다시 시작하기</button>
+            <button class="goResult-btn" onclick="goToCheckRank()">저장하고 순위보기</button>
             
-            <!-- 업데이트된 랭킹 섹션 -->
-            <div class="ranking-section">
-                <h3 class="ranking-title">🏆 업데이트된 랭킹</h3>
-                <ul class="ranking-list" id="resultRankingList">
-                    <!-- 랭킹이 여기에 동적으로 표시됩니다 -->
-                </ul>
-            </div>
         </div>
     </div>
 
     <script>
+        const supabaseUrl = 'https://xgxajgqqqirzhohqwtyc.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneGFqZ3FxcWlyemhvaHF3dHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQyOTc4MjQsImV4cCI6MjA2OTg3MzgyNH0.atWmo_9wUpEZFOjuPX0zeXRwIh2UVtI5yoJOF9BKBOo';
+      
+        const client = supabase.createClient(supabaseUrl, supabaseKey);
+
+        const searchParams = new URLSearchParams(window.location.search);
+        const game = searchParams.get('game');
+        
+        const GAME_RESULT = {
+            userName: '',
+            userScore: 0,
+        }
+
         let currentAttempt = 0;
         let totalAttempts = 5;
         let reactionTimes = [];
@@ -603,24 +251,29 @@
             document.getElementById('avgTime').textContent = avgTime + 'ms';
             document.getElementById('bestTime').textContent = bestTime + 'ms';
 
-            // 시도 기록 표시
-            const attemptList = document.getElementById('attemptList');
-            attemptList.innerHTML = '<h3>시도 기록:</h3>';
-            
-            reactionTimes.forEach((time, index) => {
-                const attemptItem = document.createElement('div');
-                attemptItem.className = 'attempt-item';
-                const isFoul = time === 700;
-                attemptItem.innerHTML = `
-                    <span>${index + 1}번째 시도</span>
-                    <span>${time}ms${isFoul ? ' (반칙)' : ''}</span>
-                `;
-                attemptList.appendChild(attemptItem);
-            });
+            GAME_RESULT.userName = currentNickname;
+            GAME_RESULT.userScore = avgTime;
+        }
 
-            // 랭킹 업데이트 (평균 시간으로 랭킹)
-            updateRanking(currentNickname, avgTime);
-            displayRanking('resultRankingList');
+        // 랭킹 업데이트 함수
+        const goToCheckRank = async () => {
+            const {userName, userScore} = GAME_RESULT;
+            const {data,error} = await client
+                .from('reactionTest')
+                .insert([{ userName, userScore }])
+                .select();
+            if (error) {
+                console.error("랭킹 업데이트 실패", error);
+                alert("랭킹 업데이트에 실패했습니다. 다시 시도해주세요.");
+                window.location.reload();
+                return;
+            }
+            const input = confirm("랭킹이 업데이트 되었습니다. 순위를 보시겠습니까?");
+            if(input){
+                window.location.href = `rankings.html?game=reactionTest`;
+            } else {
+                window.location.href = 'index.html';
+            }   
         }
 
         // 게임 재시작
@@ -643,7 +296,7 @@
             document.getElementById('startScreen').style.display = 'block';
             
             // 랭킹 다시 표시
-            displayRanking('rankingList');
+            // displayRanking('rankingList');
         }
 
         // 랭킹 업데이트 함수
@@ -662,33 +315,6 @@
             
             // 로컬 스토리지에 저장
             localStorage.setItem('reactionRankings', JSON.stringify(rankings));
-        }
-
-        // 랭킹 표시 함수
-        function displayRanking(elementId) {
-            const rankingList = document.getElementById(elementId);
-            rankingList.innerHTML = '';
-            
-            if (rankings.length === 0) {
-                rankingList.innerHTML = '<li class="ranking-item"><span class="ranking-nickname">아직 기록이 없습니다</span></li>';
-                return;
-            }
-            
-            rankings.forEach((rank, index) => {
-                const listItem = document.createElement('li');
-                listItem.className = 'ranking-item';
-                
-                const rankText = index + 1;
-                const rankEmoji = rankText === 1 ? '🥇' : rankText === 2 ? '🥈' : rankText === 3 ? '🥉' : rankText;
-                
-                listItem.innerHTML = `
-                    <span class="ranking-rank">${rankEmoji}</span>
-                    <span class="ranking-nickname">${rank.nickname}</span>
-                    <span class="ranking-score">${-rank.score}ms</span>
-                `;
-                
-                rankingList.appendChild(listItem);
-            });
         }
 
         // 로컬 스토리지에서 랭킹 로드
@@ -713,15 +339,14 @@
         window.onload = function() {
             // 랭킹 로드
             loadRankings();
-            displayRanking('rankingList');
+            // displayRanking('rankingList');
         };
 
         // 엔터키로 닉네임 입력
         document.getElementById('nicknameInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                startGameWithNickname();
-            }
+            if (e.key === 'Enter') startGameWithNickname();
         });
+
     </script>
 </body>
 </html> 

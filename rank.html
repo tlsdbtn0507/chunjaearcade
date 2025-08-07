@@ -19,17 +19,9 @@
           <img class="trophy" src="./src/trophy.png" alt="trophy" />
           <div class="ranking-title">RANKING</div>
           <div class="ranking-list">
-            <!-- 1. KSH 4.23sec<br />
-            2. SYS 5.36sec<br />
-            3. YYN 5.87sec -->
           </div>
         </div>
       </div>
-      <!-- <img
-        class="character"
-        src="https://i.imgur.com/4M7IWwP.png"
-        alt="character"
-      /> -->
       <button class="arrow-btn">
         <img
           class="arrow-img"
@@ -54,7 +46,7 @@
           title: "DdongPiHaGi",
         },
         {
-          gameName: "reactionRateTest",
+          gameName: "reactionTest",
           title: "ReactionRateTest",
         },
       ];
@@ -72,7 +64,9 @@
       const setTitleOfPage = () => {
         const urlParam = new URLSearchParams(window.location.search);
         const game = urlParam.get("game");
+
         const {gameName,title} = GAME_OBJECTS.find(gameObj => gameObj.gameName === game);
+        
         gameUrl = gameName;
         gameTitle.innerText = title;
       };
@@ -87,7 +81,7 @@
           return "";
         } else if(game === "ddongpihagi"){
           return "";
-        } else if(game === "reactionRateTest"){
+        } else if(game === "reactionTest"){
           return "ms";
         }
       }
@@ -104,6 +98,11 @@
           console.error("랭킹 데이터 불러오기 실패", error);
           alert("랭킹 데이터를 불러오는 데 실패했습니다.");
           window.location.href = "index.html";
+          return;
+        }
+
+        if (!error && data.length === 0) {
+          document.querySelector('.ranking-list').innerHTML = '<p>아직 데이터가 없습니다</p>';
           return;
         }
         const rankingList = document.querySelector(".ranking-list");

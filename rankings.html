@@ -53,7 +53,7 @@
         title: "DdongPiHaGi",
       },
       {
-        gameName: "reactionRateTest",
+        gameName: "reactionTest",
         title: "ReactionRateTest",
       },
     ];
@@ -97,7 +97,7 @@
         return "";
       } else if(game === "ddongpihagi"){
         return "";
-      } else if(game === "reactionRateTest"){
+      } else if(game === "reactionTest"){
         return "ms";
       }
     }
@@ -152,6 +152,12 @@
         return;
       }
 
+      if(!error && data.length === 0) {
+        document.querySelector('.ranking-table-body').innerHTML = 
+        '<tr><td colspan="4">아직 데이터가 없습니다</td></tr>';
+        return;
+      }
+
       const dataArr = data.map(item => {
         const d = new Date(item.created_at);
         const yyyy = d.getFullYear();
@@ -178,9 +184,15 @@
 
     fetchRankings(game); // or catchMe, reactionRateTest 등
     handleInnerHTML(game);
-    setTimeout(() => {
-      document.querySelector('.leaderboard-table').classList.add('scroll-animate');
-    }, 2000); // 2초 후에 스크롤 시작
+
+    const isScroll = () =>{
+      const rowCount = document.querySelectorAll('.ranking-table-body tr').length;
+      if(rowCount > 10){
+        setTimeout(() => {
+          document.querySelector('.leaderboard-table').classList.add('scroll-animate');
+        }, 2000); // 2초 후에 스크롤 시작
+      }
+    }
     const goHome = () => window.location.href = 'index.html';
   </script>
 </body>
