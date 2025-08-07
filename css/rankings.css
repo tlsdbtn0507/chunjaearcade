@@ -1,0 +1,90 @@
+    body {
+      margin: 0;
+      background: url('../src/backgroundBrick.png') repeat;
+      font-family: "Press Start 2P", monospace;
+      display: grid;
+      align-items: center;
+      color: white;
+    }
+    .ranking-header {
+      background-color: #000;
+      color: #fff;
+      font-family: 'Press Start 2P', cursive;
+      text-align: center;
+      padding: 20px;
+      font-size: 2rem;
+      border-bottom: 2px solid #444;
+      width: 100%;
+    }
+    .leaderboard-container {
+      width: 80%;
+      height: 80vh;
+      margin: 60px auto;
+      background: #000;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .scroll-wrapper {
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      position: absolute;
+      /* animation: scroll 15s linear infinite; */
+    }
+
+    .scroll-animate {
+      animation: scroll 15s linear infinite;
+    }
+
+    @keyframes scroll {
+      0% { top: 0; }
+      100% { top: -100%; }
+    }
+
+    .leaderboard-table th,
+    .leaderboard-table td {
+      padding: 12px;
+      font-size: 18px;
+    }
+
+    .leaderboard-table th {
+      color: red;
+      background: #111;
+      position: sticky;
+      top: 0;
+    }
+
+    .leaderboard-table td:nth-child(1) { color: #66ccff; }  
+    .leaderboard-table td:nth-child(3) { color: #ff6666; } 
+
+    .back-button {
+      position: fixed;
+      bottom: 10%;
+      right: 10%;
+      background: url('../src/toHomeBtn.png') no-repeat center center;
+      background-size: cover;
+      width: 5vw;
+      height: 10vh;
+      border: none;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .blackBg {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 30%;
+      background-color: rgba(0, 0, 0, 1);
+      z-index: 1;
+    }

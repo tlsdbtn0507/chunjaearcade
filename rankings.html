@@ -7,120 +7,100 @@
     rel="stylesheet"
   />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="./css/rankings.css" />
   <title>랭킹 보드</title>
-  <style>
-    body {
-      margin: 0;
-      background: url('./src/backgroundBrick.png') repeat;
-      font-family: 'Courier New', monospace;
-      display: grid;
-      align-items: center;
-      color: white;
-    }
-    .ranking-header {
-      background-color: #000;
-      color: #fff;
-      font-family: 'Press Start 2P', cursive;
-      text-align: center;
-      padding: 20px;
-      font-size: 1rem;
-      border-bottom: 2px solid #444;
-      width: 80%;
-    }
-    .leaderboard-container {
-      width: 80%;
-      height: 80vh;
-      margin: 60px auto;
-      background: #000;
-      border-radius: 16px;
-      padding: 30px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
-      overflow: hidden;
-      position: relative;
-    }
-
-    .scroll-wrapper {
-      height: 100%;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .leaderboard-table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: center;
-      position: absolute;
-      animation: scroll 15s linear infinite;
-    }
-
-    /* @keyframes scroll {
-      0% { top: 0; }
-      100% { top: -100%; }
-    } */
-
-    .leaderboard-table th,
-    .leaderboard-table td {
-      padding: 12px;
-      font-size: 18px;
-    }
-
-    .leaderboard-table th {
-      color: red;
-      background: #111;
-      position: sticky;
-      top: 0;
-    }
-
-    .leaderboard-table td:nth-child(1) { color: #66ccff; }  /* STAND /
-    .leaderboard-table td:nth-child(3) { color: #ff6666; }  / NAME */
-
-    .back-button {
-      position: fixed;
-      bottom: 10%;
-      right: 10%;
-      background: url('./src/toHomeBtn.png') no-repeat center center;
-      background-size: cover;
-      width: 5vw;
-      height: 10vh;
-      border: none;
-      /* border-radius: 50%; */
-      cursor: pointer;
-    }
-  </style>
-
-  </style>
-  </style>
 </head>
 <body>
   <div class="leaderboard-container">
     <div class="ranking-header">
-      Rankings of Steel King Kim Steel
     </div>
-    <table class="leaderboard-table">
-      <thead>
-        <tr>
-          <th>STAND</th>
-          <th>NAME</th>
-          <th>TIME</th>
-          <th>DATE</th>
-        </tr>
-      </thead>
-      <tbody class="ranking-table-body" id="rankingBody">
-        <!-- 랭킹 데이터가 여기에 추가됩니다 -->
-      </tbody>
-    </table>
+    <div class="scroll-wrapper">
+      <table class="leaderboard-table">
+        <thead>
+          <tr>
+            <th>STAND</th>
+            <th>NAME</th>
+            <th class="score"></th>
+            <th>DATE</th>
+          </tr>
+        </thead>
+        <tbody class="ranking-table-body" id="rankingBody">
+          <!-- 랭킹 데이터가 여기에 추가됩니다 -->
+        </tbody>
+      </table>
+    </div>
+    <div class="blackBg">
+      <img style="z-index: 2;" src="./src/char1-1.png" alt="">
+      <img style="z-index: 2;" src="./src/char2-1.png" alt="">
+      <img style="z-index: 2;" src="./src/char3-1.png" alt="">
+    </div>
   </div>
 
   <!-- 뒤로가기 버튼 -->
   <button class="back-button" onclick="goHome()"></button>
   <script>
+    const GAME_OBJECTS = [
+      {
+        gameName: "steelKing",
+        title: "Steel King Steel Kim",
+      },
+      {
+        gameName: "catchMe",
+        title: "Catch me If you can",
+      },
+      {
+        gameName: "ddongpihagi",
+        title: "DdongPiHaGi",
+      },
+      {
+        gameName: "reactionRateTest",
+        title: "ReactionRateTest",
+      },
+    ];
     const supabaseUrl = 'https://xgxajgqqqirzhohqwtyc.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneGFqZ3FxcWlyemhvaHF3dHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQyOTc4MjQsImV4cCI6MjA2OTg3MzgyNH0.atWmo_9wUpEZFOjuPX0zeXRwIh2UVtI5yoJOF9BKBOo';
     const client = supabase.createClient(supabaseUrl, supabaseKey);
+
+    let imgFlag = true
+
+    setInterval(()=>{
+      document.querySelectorAll('.blackBg img').forEach((img, index) => {
+        if(imgFlag) {
+          img.src = `./src/char${index + 1}-1.png`;
+        } else {
+          img.src = `./src/char${index + 1}-2.png`;
+        }
+        imgFlag = !imgFlag;
+      });
+    },500)
+
+    const searchParams = new URLSearchParams(window.location.search);
+    const game = searchParams.get('game');
+
+    const handleInnerHTML = (game) => {
+      const {title} = GAME_OBJECTS.find(obj => obj.gameName === game);
+      document.querySelector('.ranking-header').innerText = 
+      `Rankings of ${title}`;
+      if (game === 'catchMe' || game === 'ddongpihagi') {
+        document.querySelector('.score').innerText = 'Score';
+      } else {
+        document.querySelector('.score').innerText = 'Time';
+      }
+    };
+    handleInnerHTML(game);
+
     
-    // const tbody = document.getElementById('rankingBody');
-    // const clone = tbody.cloneNode(true);
-    // document.getElementById('rankingTable').appendChild(clone);
+    const rankScoreChar = (game)=>{
+      if(game === "steelKing"){
+        return "sec";
+      } else if(game === "catchMe"){
+        return "";
+      } else if(game === "ddongpihagi"){
+        return "";
+      } else if(game === "reactionRateTest"){
+        return "ms";
+      }
+    }
 
     const getOrdinalSuffix = (rank) => {
       const j = rank % 10, k = rank % 100;
@@ -131,7 +111,12 @@
     };
 
     const assignRanks = (players) => {
-      players.sort((a, b) => a.time - b.time);
+      if(game === 'catchMe' || game === 'ddongpihagi') {
+        players.sort((a, b) => b.time - a.time);
+      } else {
+        players.sort((a, b) => a.time - b.time);
+      }
+
       let rank = 1, prevTime = null, sameRankCount = 0;
       return players.map((player) => {
         if (player.time === prevTime) {
@@ -181,7 +166,7 @@
         return {
           name: item.userName,
           time: item.userScore,
-          timeText: `${item.userScore}초`,
+          timeText: `${item.userScore}${rankScoreChar(game)}`,
           date: `${yyyy}. ${mm}. ${dd}. ${ampm} ${String(hours).padStart(2, '0')}:${minutes}`
         };
       });
@@ -190,7 +175,12 @@
       ranked.forEach(r => addRow(r.rankText, r.name, r.timeText, r.date));
     };
 
-    fetchRankings("steelKing"); // or catchMe, reactionRateTest 등
+
+    fetchRankings(game); // or catchMe, reactionRateTest 등
+    handleInnerHTML(game);
+    setTimeout(() => {
+      document.querySelector('.leaderboard-table').classList.add('scroll-animate');
+    }, 2000); // 2초 후에 스크롤 시작
     const goHome = () => window.location.href = 'index.html';
   </script>
 </body>

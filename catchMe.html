@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>나 잡아봐라 게임</title>
+    <link rel="stylesheet" href="./css/catchMe.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-body">
+        <div class="game-container" id="gameContainer">
+            <h1>🎮 나 잡아봐라 게임 🎮</h1>
+            <div class="instructions">
+                빠르게 움직이는 버튼들을 잡아보세요!<br>
+                20초 안에 최대한 많이 잡으세요!
+            </div>
+            <input type="text" class="nickname-input" id="nicknameInput" placeholder="닉네임을 입력하세요" maxlength="10">
+            <div class="score" id="score">점수: 0</div>
+            <div class="timer" id="timer">시간: 20초</div>
+            <button class="start-button" id="startButton">게임 시작!</button>
+            
+            <!-- <div class="ranking" id="ranking">
+                <h3>🏆 랭킹 🏆</h3>
+                <div id="rankingList"></div>
+            </div> -->
+        </div>
+    
+        <div class="game-area" id="gameArea" style="display: none;">
+            <div class="score" style="position: absolute; top: 20px; left: 20px; z-index: 100;">점수: <span id="gameScore">0</span></div>
+            <div class="timer" style="position: absolute; top: 20px; right: 20px; z-index: 100;">시간: <span id="gameTimer">20</span>초</div>
+        </div>
+    
+        <div class="game-over" id="gameOver">
+            <div>🎉 게임 종료! 🎉</div>
+            <div style="margin: 1rem 0; font-size: 1.5rem;">최종 점수: <span id="finalScore">0</span></div>
+            <button class="restart-button" onclick="restartGame()">다시 시작</button>
+            <button class="save-button" onclick="saveScore()">점수 저장</button>
+        </div>
+    </div>
+
+
+    <script>
+      const supabaseUrl = 'https://xgxajgqqqirzhohqwtyc.supabase.co';
+      const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneGFqZ3FxcWlyemhvaHF3dHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQyOTc4MjQsImV4cCI6MjA2OTg3MzgyNH0.atWmo_9wUpEZFOjuPX0zeXRwIh2UVtI5yoJOF9BKBOo';
+      const client = supabase.createClient(supabaseUrl, supabaseKey);
+
+      const USER_GAME_DATA = {
+        userName:'',
+        userScore: 0,
+      }
+
+      let score = 0;
+      let timeLeft = 20;
+      let gameInterval;
+      let buttonInterval;
+      let buttons = [];
+      let isGameRunning = false;
+      let rankings = JSON.parse(localStorage.getItem('gameRankings')) || [];
+      
+      const isNicknameValid = (nickname) => {
+        const regex = /^[a-zA-Z]{1,12}$/;
+        return regex.test(nickname);
+      }
+      
+      const startButton = document.getElementById('startButton');
+      const gameContainer = document.getElementById('gameContainer')
+      const gameArea = document.getElementById('gameArea');
+      const gameOver = document.getElementById('gameOver');
+      const gameScore = document.getElementById('gameScore');
+      const gameTimer = document.getElementById('gameTimer');
+      const finalScore = document.getElementById('finalScore');
+      const nicknameInput = document.getElementById('nicknameInput');
+      const rankingList = document.getElementById('rankingList');
+      // 랭킹 표시
+      // displayRankings();
+      // 게임 시작
+      startButton.addEventListener('click', startGame);
+      // 페이지 로드 시 닉네임 입력창 초기화
+      window.addEventListener('load', () => {
+          nicknameInput.value = '';
+      });
+      function startGame() {
+          const nickname = nicknameInput.value.trim();
+          if(!isNicknameValid(nickname)) {
+              alert('닉네임은 영문자 1~12자로 입력해주세요!');
+              return;
+          }
+          if (!nickname) {
+              alert('닉네임을 입력해주세요!');
+              return;
+          }
+          isGameRunning = true;
+          score = 0;
+          timeLeft = 1;
+          startButton.style.display = 'none';
+          gameContainer.style.display = 'none';
+          gameArea.style.display = 'block';
+          
+          // 점수와 타이머 업데이트
+          updateScore();
+          updateTimer();
+          
+          // 게임 타이머 시작
+          gameInterval = setInterval(() => {
+              timeLeft--;
+              updateTimer();
+              if (timeLeft <= 0) {
+                  endGame(nickname);
+              }
+          }, 1000);
+          
+          // 버튼 생성 시작
+          createButtons();
+          
+          // 배경 점들 생성
+          createDots();
+      }
+      function createButtons() {
+          buttonInterval = setInterval(() => {
+              if (!isGameRunning) return;
+              
+              // 새로운 버튼 생성 (3-6개)
+              const buttonCount = Math.floor(Math.random() * 4) + 3;
+              for (let i = 0; i < buttonCount; i++) {
+                    createButton();
+                }
+            }, 800); // 0.8초마다 새 버튼 생성
+        }
+
+        function createButton() {
+            const button = document.createElement('button');
+            button.className = 'ping-button';
+            button.textContent = '잡아보세요!';
+            
+            // 랜덤 위치 설정
+            const maxX = window.innerWidth - 80;
+            const maxY = window.innerHeight - 80;
+            const x = Math.random() * maxX;
+            const y = Math.random() * maxY;
+            
+            button.style.left = x + 'px';
+            button.style.top = y + 'px';
+            
+            // 클릭 이벤트
+            button.addEventListener('click', () => {
+                if (isGameRunning) {
+                    score += 10;
+                    updateScore();
+                    button.remove();
+                    buttons = buttons.filter(btn => btn !== button);
+                }
+            });
+            
+            gameArea.appendChild(button);
+            buttons.push(button);
+            
+            // 1-3초 후 자동으로 사라지기
+            const disappearTime = Math.random() * 2000 + 1000; // 1-3초
+            setTimeout(() => {
+                if (button.parentNode) {
+                    button.remove();
+                    buttons = buttons.filter(btn => btn !== button);
+                }
+            }, disappearTime);
+        }
+
+        function createDots() {
+            for (let i = 0; i < 50; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dots';
+                dot.style.left = Math.random() * window.innerWidth + 'px';
+                dot.style.top = Math.random() * window.innerHeight + 'px';
+                dot.style.animationDelay = Math.random() * 1 + 's';
+                document.body.appendChild(dot);
+            }
+        }
+
+        function updateScore() {
+            gameScore.textContent = score;
+        }
+
+        function updateTimer() {
+            gameTimer.textContent = timeLeft;
+        }
+
+        function endGame(nickname) {
+            isGameRunning = false;
+            clearInterval(gameInterval);
+            clearInterval(buttonInterval);
+            
+            // 버튼들 제거
+            buttons.forEach(btn => {
+                if (btn.parentNode) {
+                    btn.remove();
+                }
+            });
+            buttons = [];
+            
+            // 랭킹에 추가
+            // addToRanking(nickname, score);
+            USER_GAME_DATA.userName = nickname;
+            USER_GAME_DATA.userScore = score;
+            
+            // 게임 오버 화면 표시
+            finalScore.textContent = score;
+            gameOver.style.display = 'block';
+        }
+
+        const saveScore = async() => {
+          const {userName, userScore} = USER_GAME_DATA;
+          // console.log(userName,userScore, typeof userScore);
+          
+          const {data, error} = await client
+            .from('catchMe')
+            .insert([{ userName: userName, userScore: userScore }]);
+
+          if (error) {
+            alert('랭킹 저장 실패 나중에 다시 시도해주세요.');
+            window.location.reload();
+            return;
+          }
+
+          const input = confirm('랭킹이 저장되었습니다! 랭킹 페이지로 이동하시겠어요?');
+          if (input) {
+            window.location.href = 'rankings.html?game=catchMe';
+          } else {
+            window.location.href = 'index.html';
+          }
+        }
+
+        function restartGame() {
+          window.location.reload();
+        }
+
+        // 창 크기 변경 시 버튼 위치 조정
+        window.addEventListener('resize', () => {
+            if (isGameRunning) {
+                buttons.forEach(btn => {
+                    const maxX = window.innerWidth - 80;
+                    const maxY = window.innerHeight - 80;
+                    const x = Math.random() * maxX;
+                    const y = Math.random() * maxY;
+                    btn.style.left = x + 'px';
+                    btn.style.top = y + 'px';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

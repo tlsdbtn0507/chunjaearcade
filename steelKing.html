@@ -29,6 +29,11 @@
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneGFqZ3FxcWlyemhvaHF3dHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQyOTc4MjQsImV4cCI6MjA2OTg3MzgyNH0.atWmo_9wUpEZFOjuPX0zeXRwIh2UVtI5yoJOF9BKBOo';
     const client = supabase.createClient(supabaseUrl, supabaseKey);
 
+    const isNicknameValid = (nickname) => {
+      const regex = /^[a-zA-Z]{1,12}$/;
+      return regex.test(nickname);
+    }
+
     const STEP = 20;
     const START_POS = 280;
     const END_POS = 960;
@@ -114,10 +119,6 @@
       modalOverlay.style.display = 'flex';
     }
 
-    const isNicknameValid = (nickname) => {
-      const regex = /^[a-zA-Z]{1,12}$/;
-      return regex.test(nickname);
-    }
 
     const saveResult = async (time) => {
       const userName = document.getElementById('nickname').value.trim();
@@ -176,6 +177,7 @@
     
 
     updateRunner();
+
   </script>
 </body>
 </html>

@@ -25,7 +25,7 @@ a {
 /* 타이틀 */
 .arcade-title {
   margin: 60px auto 10%;
-  width: min(800px, 92vw);
+  width: 70vw;
   background: #22160f;
   border-radius: 30px;
   text-align: center;
@@ -65,6 +65,11 @@ a {
   box-shadow: 0 4px 0 #0008;
 }
 
+.game-card:hover {
+  transform: translateY(-8px); /* 위로 약간 띄움 */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4), 0 0 0 3px #ffcc00aa; /* 테두리 + 그림자 강조 */
+  background: #2e1d12; /* 배경 색을 살짝 밝게 */
+}
 /* 썸네일 */
 .game-img {
   width: 100px;

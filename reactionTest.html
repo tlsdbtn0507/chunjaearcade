@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>반응속도 테스트</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            color: #4a5568;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #718096;
+            margin-bottom: 40px;
+        }
+
+        .start-screen {
+            display: block;
+        }
+
+        .nickname-screen {
+            display: none;
+        }
+
+        .instruction-screen {
+            display: none;
+        }
+
+        .instruction-list {
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .instruction-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .instruction-number {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .instruction-text {
+            font-size: 1.1rem;
+            color: #4a5568;
+            line-height: 1.5;
+            flex: 1;
+        }
+
+        .instruction-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .instruction-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .game-screen {
+            display: none;
+            min-height: 400px;
+            cursor: pointer;
+            border-radius: 15px;
+            transition: background-color 0.3s ease;
+            position: relative;
+        }
+        
+        .game-info {
+            margin-top: 20px;
+        }
+
+        .game-screen.waiting {
+            background-color: #f56565;
+            color: white;
+        }
+
+        .game-screen.ready {
+            background-color: #48bb78;
+            color: white;
+        }
+
+        .game-screen.clicked {
+            background-color: #667eea;
+            color: white;
+        }
+
+        .result-screen {
+            display: none;
+        }
+
+        .ranking-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            text-align: left;
+        }
+
+        .ranking-title {
+            font-size: 1.3rem;
+            color: #4a5568;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .ranking-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .ranking-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .ranking-rank {
+            font-weight: bold;
+            color: #667eea;
+            min-width: 30px;
+        }
+
+        .ranking-nickname {
+            flex: 1;
+            margin: 0 15px;
+            font-weight: 500;
+        }
+
+        .ranking-score {
+            font-weight: bold;
+            color: #48bb78;
+        }
+
+        .nickname-input {
+            width: 100%;
+            max-width: 300px;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 25px;
+            margin: 20px 0;
+            text-align: center;
+            transition: border-color 0.3s ease;
+        }
+
+        .nickname-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .start-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            font-weight: bold;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .nickname-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .nickname-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .restart-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .clear-btn {
+            background: #f56565;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .clear-btn:hover {
+            background: #e53e3e;
+            transform: translateY(-1px);
+        }
+
+        .emoji {
+            font-size: 4rem;
+            margin: 20px 0;
+        }
+
+        .game-message {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .reaction-time {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 10px 20px;
+            background: #f7fafc;
+            border-radius: 25px;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            margin: 0 15px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .score {
+            font-size: 1.1rem;
+            color: #4a5568;
+            font-weight: bold;
+        }
+
+        .final-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #718096;
+            margin-top: 5px;
+        }
+
+        .attempt-list {
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .attempt-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: #f7fafc;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 시작 화면 -->
+        <div class="start-screen" id="startScreen">
+            <div class="emoji">⚡</div>
+            <h1 class="title">반응속도 테스트</h1>
+            <p class="subtitle">빨간색 화면에서 초록색으로 바뀌면 빠르게 클릭하세요!</p>
+            <button class="start-btn" onclick="showNicknameScreen()">테스트 시작하기</button>
+            
+            <!-- 랭킹 섹션 -->
+            <div class="ranking-section">
+                <h3 class="ranking-title">🏆 상위 랭킹</h3>
+                <ul class="ranking-list" id="rankingList">
+                    <!-- 랭킹이 여기에 동적으로 표시됩니다 -->
+                </ul>
+                <button class="clear-btn" onclick="clearRankings()">랭킹 초기화</button>
+            </div>
+        </div>
+
+        <!-- 닉네임 입력 화면 -->
+        <div class="nickname-screen" id="nicknameScreen">
+            <div class="emoji">👤</div>
+            <h1 class="title">닉네임 입력</h1>
+            <p class="subtitle">테스트에 사용할 닉네임을 입력해주세요!</p>
+            <input type="text" class="nickname-input" id="nicknameInput" placeholder="닉네임을 입력하세요" maxlength="10">
+            <br>
+            <button class="nickname-btn" id="nicknameBtn" onclick="showInstructionScreen()">다음</button>
+        </div>
+
+        <!-- 게임 설명 화면 -->
+        <div class="instruction-screen" id="instructionScreen">
+            <div class="emoji">📋</div>
+            <h1 class="title">게임 방법</h1>
+            <div class="instruction-list">
+                <div class="instruction-item">
+                    <div class="instruction-number">1</div>
+                    <div class="instruction-text">빨간색 화면에서는 아무것도 안누르고 기다립니다.</div>
+                </div>
+                <div class="instruction-item">
+                    <div class="instruction-number">2</div>
+                    <div class="instruction-text">초록색 화면이 나오면 재빨리 누릅니다.</div>
+                </div>
+                <div class="instruction-item">
+                    <div class="instruction-number">3</div>
+                    <div class="instruction-text">만약, 실수로 빨간색 화면에서 클릭하면 패널티가 부여됩니다.</div>
+                </div>
+            </div>
+            <button class="instruction-btn" onclick="startGameWithNickname()">게임 시작</button>
+        </div>
+
+        <!-- 게임 화면 -->
+        <div class="game-screen" id="gameScreen">
+            <!-- 게임 화면은 색깔만 표시 -->
+        </div>
+        
+        <!-- 게임 정보 (게임 화면 밖에 배치) -->
+        <div class="game-info" id="gameInfo" style="display: none;">
+            <div class="progress">
+                <span class="score">시도 <span id="currentAttempt">1</span> / <span id="totalAttempts">5</span></span>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+            
+            <div class="game-message" id="gameMessage">기다리세요...</div>
+            <div class="reaction-time" id="reactionTime"></div>
+        </div>
+
+        <!-- 결과 화면 -->
+        <div class="result-screen" id="resultScreen">
+            <div class="emoji" id="resultEmoji">🎯</div>
+            <h1 class="title">테스트 완료!</h1>
+            
+            <div class="final-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="avgTime">0ms</div>
+                    <div class="stat-label">평균 반응속도</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="bestTime">0ms</div>
+                    <div class="stat-label">최고 기록</div>
+                </div>
+            </div>
+
+            <div class="attempt-list" id="attemptList">
+                <!-- 시도 기록이 여기에 표시됩니다 -->
+            </div>
+
+            <button class="restart-btn" onclick="restartGame()">다시 시작하기</button>
+            
+            <!-- 업데이트된 랭킹 섹션 -->
+            <div class="ranking-section">
+                <h3 class="ranking-title">🏆 업데이트된 랭킹</h3>
+                <ul class="ranking-list" id="resultRankingList">
+                    <!-- 랭킹이 여기에 동적으로 표시됩니다 -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentAttempt = 0;
+        let totalAttempts = 5;
+        let reactionTimes = [];
+        let currentNickname = '';
+        let rankings = [];
+        let gameState = 'waiting'; // waiting, ready, clicked
+        let startTime = 0;
+        let waitTimer = null;
+        let gameScreen = null;
+
+        // 닉네임 화면 표시
+        function showNicknameScreen() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('nicknameScreen').style.display = 'block';
+            document.getElementById('nicknameInput').focus();
+        }
+
+        // 설명 화면 표시
+        function showInstructionScreen() {
+            const nickname = document.getElementById('nicknameInput').value.trim();
+            if (nickname.length < 2) {
+                alert('닉네임을 2글자 이상 입력해주세요!');
+                return;
+            }
+            
+            currentNickname = nickname;
+            document.getElementById('nicknameScreen').style.display = 'none';
+            document.getElementById('instructionScreen').style.display = 'block';
+        }
+
+        // 닉네임으로 게임 시작
+        function startGameWithNickname() {
+            document.getElementById('instructionScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            document.getElementById('gameInfo').style.display = 'block';
+            startAttempt();
+        }
+
+        // 시도 시작
+        function startAttempt() {
+            if (currentAttempt >= totalAttempts) {
+                showResult();
+                return;
+            }
+
+            currentAttempt++;
+            document.getElementById('currentAttempt').textContent = currentAttempt;
+            document.getElementById('totalAttempts').textContent = totalAttempts;
+            
+            // 진행률 업데이트
+            const progress = (currentAttempt / totalAttempts) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+
+            // 게임 화면 초기화
+            gameScreen = document.getElementById('gameScreen');
+            gameState = 'waiting'; // 상태 초기화
+            gameScreen.className = 'game-screen waiting';
+            gameScreen.onclick = handleFoulClick; // 반칙 클릭 처리 추가
+            
+            const gameMessage = document.getElementById('gameMessage');
+            const reactionTime = document.getElementById('reactionTime');
+            
+            gameMessage.textContent = '기다리세요...';
+            reactionTime.textContent = '';
+
+            // 랜덤 시간 후 초록색으로 변경 (2~7초)
+            const randomDelay = Math.random() * 5000 + 2000; // 2~7초
+            
+            waitTimer = setTimeout(() => {
+                gameState = 'ready';
+                gameScreen.className = 'game-screen ready';
+                gameMessage.textContent = '지금 누르세요!';
+                startTime = Date.now();
+                gameScreen.onclick = handleClick;
+            }, randomDelay);
+        }
+
+        // 반칙 클릭 처리
+        function handleFoulClick() {
+            if (gameState !== 'waiting') return;
+
+            // 타이머 정리
+            if (waitTimer) {
+                clearTimeout(waitTimer);
+            }
+
+            gameState = 'clicked';
+            gameScreen.className = 'game-screen clicked';
+            gameScreen.onclick = null;
+            
+            const gameMessage = document.getElementById('gameMessage');
+            const reactionTime = document.getElementById('reactionTime');
+            
+            gameMessage.textContent = '삐빅! 반칙입니다!';
+            reactionTime.textContent = '700ms (패널티)';
+
+            // 패널티 시간 추가 (700ms)
+            reactionTimes.push(700);
+
+            // 2초 후 다음 시도 (반칙 메시지를 더 오래 보여줌)
+            setTimeout(() => {
+                startAttempt();
+            }, 2000);
+        }
+
+        // 클릭 처리
+        function handleClick() {
+            if (gameState !== 'ready') return;
+
+            const endTime = Date.now();
+            const reactionTime = endTime - startTime;
+            
+            reactionTimes.push(reactionTime);
+            
+            gameState = 'clicked';
+            gameScreen.className = 'game-screen clicked';
+            gameScreen.onclick = null;
+            
+            const gameMessage = document.getElementById('gameMessage');
+            const reactionTimeDisplay = document.getElementById('reactionTime');
+            
+            gameMessage.textContent = '클릭됨!';
+            reactionTimeDisplay.textContent = reactionTime + 'ms';
+
+            // 1초 후 다음 시도
+            setTimeout(() => {
+                startAttempt();
+            }, 1000);
+        }
+
+        // 결과 표시
+        function showResult() {
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('gameInfo').style.display = 'none';
+            document.getElementById('resultScreen').style.display = 'block';
+            
+            const avgTime = Math.round(reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length);
+            const bestTime = Math.min(...reactionTimes);
+            
+            document.getElementById('avgTime').textContent = avgTime + 'ms';
+            document.getElementById('bestTime').textContent = bestTime + 'ms';
+
+            // 시도 기록 표시
+            const attemptList = document.getElementById('attemptList');
+            attemptList.innerHTML = '<h3>시도 기록:</h3>';
+            
+            reactionTimes.forEach((time, index) => {
+                const attemptItem = document.createElement('div');
+                attemptItem.className = 'attempt-item';
+                const isFoul = time === 700;
+                attemptItem.innerHTML = `
+                    <span>${index + 1}번째 시도</span>
+                    <span>${time}ms${isFoul ? ' (반칙)' : ''}</span>
+                `;
+                attemptList.appendChild(attemptItem);
+            });
+
+            // 랭킹 업데이트 (평균 시간으로 랭킹)
+            updateRanking(currentNickname, avgTime);
+            displayRanking('resultRankingList');
+        }
+
+        // 게임 재시작
+        function restartGame() {
+            currentAttempt = 0;
+            reactionTimes = [];
+            currentNickname = '';
+            
+            // 타이머 정리
+            if (waitTimer) {
+                clearTimeout(waitTimer);
+            }
+            
+            // 닉네임 입력 초기화
+            document.getElementById('nicknameInput').value = '';
+            
+            document.getElementById('resultScreen').style.display = 'none';
+            document.getElementById('gameInfo').style.display = 'none';
+            document.getElementById('instructionScreen').style.display = 'none';
+            document.getElementById('startScreen').style.display = 'block';
+            
+            // 랭킹 다시 표시
+            displayRanking('rankingList');
+        }
+
+        // 랭킹 업데이트 함수
+        function updateRanking(nickname, avgTime) {
+            // 기존 닉네임이 있으면 제거
+            rankings = rankings.filter(rank => rank.nickname !== nickname);
+            
+            // 새로운 점수 추가 (반응속도는 낮을수록 좋으므로 음수로 저장)
+            rankings.push({ nickname, score: -avgTime });
+            
+            // 점수순으로 정렬 (높은 점수 우선, 즉 빠른 시간 우선)
+            rankings.sort((a, b) => b.score - a.score);
+            
+            // 상위 10명만 유지
+            rankings = rankings.slice(0, 10);
+            
+            // 로컬 스토리지에 저장
+            localStorage.setItem('reactionRankings', JSON.stringify(rankings));
+        }
+
+        // 랭킹 표시 함수
+        function displayRanking(elementId) {
+            const rankingList = document.getElementById(elementId);
+            rankingList.innerHTML = '';
+            
+            if (rankings.length === 0) {
+                rankingList.innerHTML = '<li class="ranking-item"><span class="ranking-nickname">아직 기록이 없습니다</span></li>';
+                return;
+            }
+            
+            rankings.forEach((rank, index) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'ranking-item';
+                
+                const rankText = index + 1;
+                const rankEmoji = rankText === 1 ? '🥇' : rankText === 2 ? '🥈' : rankText === 3 ? '🥉' : rankText;
+                
+                listItem.innerHTML = `
+                    <span class="ranking-rank">${rankEmoji}</span>
+                    <span class="ranking-nickname">${rank.nickname}</span>
+                    <span class="ranking-score">${-rank.score}ms</span>
+                `;
+                
+                rankingList.appendChild(listItem);
+            });
+        }
+
+        // 로컬 스토리지에서 랭킹 로드
+        function loadRankings() {
+            const savedRankings = localStorage.getItem('reactionRankings');
+            if (savedRankings) {
+                rankings = JSON.parse(savedRankings);
+            }
+        }
+
+        // 랭킹 초기화 함수
+        function clearRankings() {
+            if (confirm('정말로 모든 랭킹 기록을 삭제하시겠습니까?')) {
+                rankings = [];
+                localStorage.removeItem('reactionRankings');
+                displayRanking('rankingList');
+                alert('랭킹이 초기화되었습니다!');
+            }
+        }
+
+        // 페이지 로드 시 초기화
+        window.onload = function() {
+            // 랭킹 로드
+            loadRankings();
+            displayRanking('rankingList');
+        };
+
+        // 엔터키로 닉네임 입력
+        document.getElementById('nicknameInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                startGameWithNickname();
+            }
+        });
+    </script>
+</body>
+</html> 

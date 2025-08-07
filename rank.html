@@ -19,9 +19,9 @@
           <img class="trophy" src="./src/trophy.png" alt="trophy" />
           <div class="ranking-title">RANKING</div>
           <div class="ranking-list">
-            1. KSH 4.23sec<br />
+            <!-- 1. KSH 4.23sec<br />
             2. SYS 5.36sec<br />
-            3. YYN 5.87sec
+            3. YYN 5.87sec -->
           </div>
         </div>
       </div>
@@ -38,6 +38,7 @@
         />
       </button>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="module">
       const GAME_OBJECTS = [
         {
@@ -57,7 +58,12 @@
           title: "ReactionRateTest",
         },
       ];
+
+      const supabaseUrl = 'https://xgxajgqqqirzhohqwtyc.supabase.co';
+      const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneGFqZ3FxcWlyemhvaHF3dHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQyOTc4MjQsImV4cCI6MjA2OTg3MzgyNH0.atWmo_9wUpEZFOjuPX0zeXRwIh2UVtI5yoJOF9BKBOo';
       
+      const client = supabase.createClient(supabaseUrl, supabaseKey);
+
       const gameTitle = document.querySelector(".title");
       const gameStartBtn = document.querySelector(".start-btn");
 
@@ -72,6 +78,47 @@
       };
 
       setTitleOfPage();
+
+
+      const rankScoreChar = (game)=>{
+        if(game === "steelKing"){
+          return "sec";
+        } else if(game === "catchMe"){
+          return "";
+        } else if(game === "ddongpihagi"){
+          return "";
+        } else if(game === "reactionRateTest"){
+          return "ms";
+        }
+      }
+
+      const fetchTop3Rankings = async() => {
+
+        const {data,error} = await client
+          .from(gameUrl)
+          .select('*')
+          .order('userScore', { ascending: gameUrl !== 'catchMe' && gameUrl !== 'ddongpihagi' })
+          .limit(3);
+
+        if (error) {
+          console.error("랭킹 데이터 불러오기 실패", error);
+          alert("랭킹 데이터를 불러오는 데 실패했습니다.");
+          window.location.href = "index.html";
+          return;
+        }
+        const rankingList = document.querySelector(".ranking-list");
+        rankingList.innerHTML = ""; // 기존 랭킹 데이터 초기화
+        data.forEach((player, index) => {
+          rankingList.innerHTML +=
+          `<p class="ranking-item">
+            <span class="rank">${index + 1}.</span>
+            <span class="name">${player.userName}</span>
+            <span class="time">${player.userScore}${rankScoreChar(gameUrl)}</span><br>
+          </p>`;
+        });
+      };
+      fetchTop3Rankings()
+
 
       gameStartBtn.addEventListener('click',()=>{
         window.location.href = gameUrl
