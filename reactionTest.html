@@ -107,6 +107,11 @@
         const GAME_RESULT = {
             userName: '',
             userScore: 0,
+        };
+
+        const isNicknameValid = (nickname) => {
+            const regex = /^[a-zA-Z]{1,12}$/;
+            return regex.test(nickname);
         }
 
         let currentAttempt = 0;
@@ -129,6 +134,10 @@
         // 설명 화면 표시
         function showInstructionScreen() {
             const nickname = document.getElementById('nicknameInput').value.trim();
+            if (!isNicknameValid(nickname)) {
+                alert('닉네임은 영어로 1~12자 이내로 입력해주세요!');
+                return;
+            }
             if (nickname.length < 2) {
                 alert('닉네임을 2글자 이상 입력해주세요!');
                 return;
