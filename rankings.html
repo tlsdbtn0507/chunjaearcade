@@ -37,7 +37,9 @@
   </div>
 
   <!-- 뒤로가기 버튼 -->
-  <button class="back-button" onclick="goHome()"></button>
+  <button class="homeBtn" onclick="goHome()"></button>
+  <button class="back-button" onclick="goBack()"></button>
+  <button class="feedBackBtn" onclick="goFeedback()"></button>
   <script>
     const GAME_OBJECTS = [
       {
@@ -211,8 +213,10 @@
       }, 2000);
     }
 
-    // isScroll();
     const goHome = () => window.location.href = 'index.html';
+    const goBack = () => window.history.back();
+    const goFeedback = () => window.location.href = 'comments.html';
+
   </script>
 </body>
 </html>
