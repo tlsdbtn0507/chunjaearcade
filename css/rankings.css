@@ -30,7 +30,7 @@
 
     .scroll-wrapper {
       height: 100%;
-      overflow: hidden;
+      overflow-y: auto;
       position: relative;
     }
 
@@ -42,13 +42,21 @@
       /* animation: scroll 15s linear infinite; */
     }
 
-    .scroll-animate {
-      animation: scroll 15s linear infinite;
+    /* 기존 키프레임 수정 */
+    @keyframes scroll {
+      0%   { transform: translateY(0); }
+      100% { transform: translateY(var(--scroll-distance)); } 
     }
 
-    @keyframes scroll {
-      0% { top: 0; }
-      100% { top: -100%; }
+    /* 클래스는 이름/반복/타이밍만 고정, duration은 JS에서 넣기 */
+    .scroll-animate {
+      animation-name: scroll;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    .scroll-wrapper:hover .leaderboard-table {
+      animation-play-state: paused;
     }
 
     .leaderboard-table th,

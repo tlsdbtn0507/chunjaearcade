@@ -179,6 +179,7 @@
 
       const ranked = assignRanks(dataArr);
       ranked.forEach(r => addRow(r.rankText, r.name, r.timeText, r.date));
+      isScroll();
     };
 
 
@@ -186,13 +187,31 @@
     handleInnerHTML(game);
 
     const isScroll = () =>{
-      const rowCount = document.querySelectorAll('.ranking-table-body tr').length;
-      if(rowCount > 10){
-        setTimeout(() => {
-          document.querySelector('.leaderboard-table').classList.add('scroll-animate');
-        }, 2000); // 2초 후에 스크롤 시작
-      }
+      const rows = document.querySelectorAll('.ranking-table-body tr').length;
+      const table = document.querySelector('.leaderboard-table');
+      const container = document.querySelector('.scroll-wrapper');
+
+      if (rows <= 10) return; // 10개 이하면 스크롤 안 함
+
+      // 이동해야 할 거리 = (테이블 전체 높이 - 컨테이너 높이)
+      const distance = table.offsetHeight - container.clientHeight;
+      if (distance <= 0) return;
+
+      // px/s 기준 속도 설정 (원하는 느낌으로 조절)
+      const SPEED = 40; // 예: 40px/s
+      const durationSec = distance / SPEED;
+
+      // CSS 변수/속성 주입
+      table.style.setProperty('--scroll-distance', `-${distance}px`);
+      table.style.animationDuration = `${durationSec}s`;
+
+      // 2초 뒤 시작 (요구사항 유지)
+      setTimeout(() => {
+        table.classList.add('scroll-animate');
+      }, 2000);
     }
+
+    // isScroll();
     const goHome = () => window.location.href = 'index.html';
   </script>
 </body>
