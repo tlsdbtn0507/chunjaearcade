@@ -64,7 +64,6 @@
                     <div class="progress-fill" id="progressFill"></div>
                 </div>
             </div>
-            
             <div class="game-message" id="gameMessage">기다리세요...</div>
             <div class="reaction-time" id="reactionTime"></div>
         </div>
@@ -84,10 +83,6 @@
                     <div class="stat-label">최고 기록</div>
                 </div>
             </div>
-
-            <!-- <div class="attempt-list" id="attemptList">
-                시도 기록이 여기에 표시됩니다
-            </div> -->
 
             <button class="restart-btn" onclick="restartGame()">다시 시작하기</button>
             <button class="goResult-btn" onclick="goToCheckRank()">저장하고 순위보기</button>
@@ -308,53 +303,12 @@
             // displayRanking('rankingList');
         }
 
-        // 랭킹 업데이트 함수
-        function updateRanking(nickname, avgTime) {
-            // 기존 닉네임이 있으면 제거
-            rankings = rankings.filter(rank => rank.nickname !== nickname);
-            
-            // 새로운 점수 추가 (반응속도는 낮을수록 좋으므로 음수로 저장)
-            rankings.push({ nickname, score: -avgTime });
-            
-            // 점수순으로 정렬 (높은 점수 우선, 즉 빠른 시간 우선)
-            rankings.sort((a, b) => b.score - a.score);
-            
-            // 상위 10명만 유지
-            rankings = rankings.slice(0, 10);
-            
-            // 로컬 스토리지에 저장
-            localStorage.setItem('reactionRankings', JSON.stringify(rankings));
-        }
-
-        // 로컬 스토리지에서 랭킹 로드
-        function loadRankings() {
-            const savedRankings = localStorage.getItem('reactionRankings');
-            if (savedRankings) {
-                rankings = JSON.parse(savedRankings);
-            }
-        }
-
-        // 랭킹 초기화 함수
-        function clearRankings() {
-            if (confirm('정말로 모든 랭킹 기록을 삭제하시겠습니까?')) {
-                rankings = [];
-                localStorage.removeItem('reactionRankings');
-                displayRanking('rankingList');
-                alert('랭킹이 초기화되었습니다!');
-            }
-        }
-
         // 페이지 로드 시 초기화
         window.onload = function() {
             // 랭킹 로드
             loadRankings();
             // displayRanking('rankingList');
         };
-
-        // 엔터키로 닉네임 입력
-        document.getElementById('nicknameInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') startGameWithNickname();
-        });
 
     </script>
 </body>
