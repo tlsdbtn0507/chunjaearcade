@@ -167,6 +167,7 @@
       <h2>💥 당신의 점수는 ${finalScore}점!</h2>
       <span> 닉네임은 영어로 12자 이내로 입력해주세요.</span>
       <input class="nickname" placeholder="닉네임 입력" />
+      <button class="toHome" onclick="startGame()">다시하기</button>
       <button class="toHome" onclick="window.location.href='index.html'">홈으로</button>
       <button class="saveBtn"onclick="sendResult(${finalScore})">저장하기</button>
     `;
@@ -186,7 +187,7 @@
       console.error('Error inserting data:', error);
       alert('데이터 전송에 실패했습니다. 다시 시도해주세요.');
     }
-    
+
     const input = confirm("결과를 성공적으로 전송했습니다. 랭킹을 확인하시겠습니까?");
     if (input) {
       window.location.href = 'rankings.html?game=ddongpihagi';
