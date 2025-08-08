@@ -1,0 +1,141 @@
+body {
+      margin: 0;
+      font-family: sans-serif;
+      background: url('../src/backgroundBrick.png');
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .game-wrapper {
+      width: 30vw;
+      height: 620px;
+      position: relative;
+      background-color: #fdf6ec;
+      background-size: cover;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+
+    .score {
+      font-size: 20px;
+      padding: 10px;
+      color: #000000;
+      position: absolute;
+      top: 10px;
+      left: 20px;
+    }
+
+    .game-area {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .poop {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: url('../src/ddong.png') no-repeat center center / contain;
+    }
+
+    .player {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background: url('../src/people1.png') no-repeat center center / contain;
+      bottom: 100px;
+      border-radius: 10px;
+    }
+
+    .controls {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .btn {
+      background-color: #333;
+      color: white;
+      padding: 10px 20px;
+      margin: 0 10px;
+      font-size: 24px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0,0,0,0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .modal {
+      display: grid;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      min-width: 300px;
+      text-align: center;
+      color: #222;
+    }
+
+    .modal input {
+      padding: 10px;
+      font-size: 18px;
+      width: 80%;
+      margin: 10px 0;
+    }
+
+    .toHome{
+      background: white;
+      color: #f77f00;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 15px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .saveBtn {
+      background: #f77f00;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 15px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button :hover{
+        background-color: #d96a00; /* 더 어두운 오렌지 */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+  transition: 0.2s ease;
+    }
+    .saveBtn :hover{
+      background-color: #d96a00; /* 더 어두운 오렌지 */
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+      transform: translateY(-2px);
+      transition: 0.2s ease;    
+    } 
+
+    .ranking {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .ranking .entry {
+      margin: 4px 0;
+    }

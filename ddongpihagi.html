@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>💩 피하기 게임</title>
+  <link href="./css/ddongpihagi.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="game-wrapper">
+    <div class="score">💩 피한 점수: <span id="score">0</span></div>
+    <div class="game-area" id="gameArea">
+      <div class="player" id="player"></div>
+    </div>
+    <div class="controls">
+      <button class="btn" onclick="moveLeft()">◀</button>
+      <button class="btn" onclick="moveRight()">▶</button>
+    </div>
+  </div>
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modalContent"></div>
+  </div>
+<script>
+
+  const supabaseUrl = 'https://xgxajgqqqirzhohqwtyc.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneGFqZ3FxcWlyemhvaHF3dHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQyOTc4MjQsImV4cCI6MjA2OTg3MzgyNH0.atWmo_9wUpEZFOjuPX0zeXRwIh2UVtI5yoJOF9BKBOo';
+  const client = supabase.createClient(supabaseUrl, supabaseKey);
+
+  const isNicknameValid = (nickname) => {
+    const regex = /^[a-zA-Z]{1,12}$/;
+    return regex.test(nickname);
+  };
+
+  const gameWrapper = document.querySelector('.game-wrapper');
+  const gameArea = document.getElementById('gameArea');
+  const player = document.getElementById('player');
+  const scoreEl = document.getElementById('score');
+  const modalOverlay = document.getElementById('modalOverlay');
+  const modalContent = document.getElementById('modalContent');
+
+  const playerWidth = 50;
+  const poopSize = 40;
+  let wrapperWidth ;
+  let playerX;
+  let poops = [];
+  let score = 0;
+  let gameOver = false;
+  let fallSpeed = 2;
+  let direction = 'left';
+
+  function getWrapperWidth() {
+    return gameWrapper.offsetWidth;
+  }
+
+  function randomX() {
+    return Math.random() * (getWrapperWidth() - poopSize);
+  }
+
+  function updatePlayer() {
+    player.style.left = `${playerX}px`;
+    player.style.backgroundImage = direction === 'left' ? "url('./src/people1.png')" : "url('./src/people2.png')";
+  }
+
+  function moveLeft() {
+    direction = 'left';
+    playerX = Math.max(0, playerX - 30);
+    updatePlayer();
+  }
+
+  function moveRight() {
+    direction = 'right';
+    playerX = Math.min(getWrapperWidth() - playerWidth, playerX + 30);
+    updatePlayer();
+  }
+
+
+  // 🎯 키보드 이벤트
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') moveLeft();
+    if (e.key === 'ArrowRight') moveRight();
+  });
+
+  function createPoopElements() {
+    poops.forEach((poop, i) => {
+      let el = document.getElementById(`poop-${i}`);
+      if (!el) {
+        el = document.createElement('div');
+        el.className = 'poop';
+        el.id = `poop-${i}`;
+        gameArea.appendChild(el);
+      }
+      el.style.left = `${poop.x}px`;
+      el.style.top = `${poop.y}px`;
+    });
+  }
+
+  function updatePoops() {
+    if (gameOver) return;
+    fallSpeed = 2 + Math.floor(score / 5);
+
+    poops = poops.map((poop, i) => {
+      poop.y += fallSpeed;
+
+      const playerTop = 470;
+      const playerBottom = 520;
+
+      const hit = poop.y + poopSize >= playerTop &&
+                  poop.y <= playerBottom &&
+                  poop.x < playerX + playerWidth &&
+                  poop.x + poopSize > playerX;
+
+      if (hit) endGame();
+
+      if (poop.y > 620) {
+        score++;
+        scoreEl.textContent = score;
+        return { x: randomX(), y: -Math.random() * 300 };
+      }
+
+      return poop;
+    });
+
+    createPoopElements();
+  }
+
+  function gameLoop() {
+    updatePoops();
+    if (!gameOver) requestAnimationFrame(gameLoop);
+  }
+
+  function startGame() {
+    modalOverlay.style.display = 'none';
+    wrapperWidth = getWrapperWidth();
+    playerX = wrapperWidth / 2 - playerWidth / 2;
+    updatePlayer();
+    poops = Array.from({ length: 3 }, () => ({ x: randomX(), y: -Math.random() * 300 }));
+    score = 0;
+    scoreEl.textContent = score;
+    gameOver = false;
+    fallSpeed = 2;
+    gameLoop();
+  }
+
+  function endGame() {
+    gameOver = true;
+    showModal(score);
+  }
+  function showStartModal() {
+    modalOverlay.style.display = 'flex';
+    modalContent.innerHTML = `
+      <h2>게임 방법</h2>
+      <p>🖱 화면의 <b>◀ / ▶ 버튼</b>을 클릭하거나<br>
+      ⌨ 키보드의 <b>좌/우 방향키</b>로 캐릭터를 움직이세요!</p>
+      <p>💩 똥을 피해 오래 살아남으세요!</p>
+      <button style="margin-top: 20px; padding: 10px 20px; font-size: 18px; cursor: pointer;"
+        onclick="startGame()">게임 시작</button>
+    `;
+  }
+
+  // 🚀 첫 화면에 모달 표시
+  showStartModal();
+
+  function showModal(finalScore) {
+    modalOverlay.style.display = 'flex';
+    modalContent.innerHTML = `
+      <h2>💥 당신의 점수는 ${finalScore}점!</h2>
+      <span> 닉네임은 영어로 12자 이내로 입력해주세요.</span>
+      <input class="nickname" placeholder="닉네임 입력" />
+      <button class="toHome" onclick="window.location.href='index.html'">홈으로</button>
+      <button class="saveBtn"onclick="sendResult(${finalScore})">저장하기</button>
+    `;
+  }
+
+  const sendResult = async (finalScore) => {
+    const nickName = document.querySelector('.nickname').value.trim();
+    if (!isNicknameValid(nickName) || nickName.length === 0) {
+      alert('닉네임은 영어로 12자 이내로 입력해주세요.');
+      return;
+    }
+    const { data, error } = await client
+      .from('ddongpihagi')
+      .insert([{ userName: nickName, userScore: finalScore }]);
+
+    if (error) {
+      console.error('Error inserting data:', error);
+      alert('데이터 전송에 실패했습니다. 다시 시도해주세요.');
+    }
+    
+    const input = confirm("결과를 성공적으로 전송했습니다. 랭킹을 확인하시겠습니까?");
+    if (input) {
+      window.location.href = 'rankings.html?game=ddongpihagi';
+    } else {
+      window.location.href = 'index.html';
+    }
+  }
+
+  // startGame();
+</script>
+</body>
+</html>
