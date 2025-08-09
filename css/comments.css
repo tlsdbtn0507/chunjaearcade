@@ -121,7 +121,27 @@ body {
 
 
     .input-select{
-      background-color: transparent; 
-      color: white; 
-      border: 1px transparent;
+      appearance: none;           /* 기본 화살표 제거(선택) */
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-color: rgba(0,0,0,.35);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.3);
+      border-radius: 8px;
+      padding: 8px 12px;
     }
+
+    /* 드롭다운 목록(윈도우에서 중요) */
+    .input-select option{
+      background-color: #fff;     /* 목록 배경을 흰색으로 고정 */
+      color: #111;                /* 글자는 어두운 색으로 */
+    }
+
+    /* 포커스 스타일 */
+    .input-select:focus{
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(255,255,255,.35);
+    }
+
+    /* (구형 IE/Edge) 기본 화살표 숨기기 선택 */
+    .input-select::-ms-expand{ display:none; }
