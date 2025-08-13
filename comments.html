@@ -132,6 +132,17 @@
 
   const renderComments = async () => {
     const comments = await fetchComments();
+
+    if (!comments || comments.length === 0) {
+      document.querySelector('.comments-scroll').innerHTML = 
+      `<div class="no-comments">
+        <p>아직 댓글이 없습니다.</p>
+        <p>첫 댓글을 남겨주세요!</p>
+      </div>
+      `;
+      return;
+    }
+
     const commentsScroll = document.querySelector('.comments-scroll');
     commentsScroll.innerHTML = ''; // 기존 댓글 초기화
 
@@ -168,7 +179,6 @@
       `;
 
       commentsScroll.appendChild(commentBox);
-      // recommentRenderer(recomments, comment.id);
   }
   };
 

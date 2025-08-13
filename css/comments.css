@@ -145,3 +145,10 @@ body {
 
     /* (구형 IE/Edge) 기본 화살표 숨기기 선택 */
     .input-select::-ms-expand{ display:none; }
+
+    .no-comments {
+      text-align: center;
+      color: #ccc;
+      font-size: xx-large;
+      margin-top: 20px;
+    }
