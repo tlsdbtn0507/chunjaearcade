@@ -376,13 +376,10 @@
         function gameOver() {
             gameRunning = false;
             gameOverDiv.style.display = 'block';
-            // const userName = getUserName();
             
+            document.getElementById('finalScore').textContent = score;
             document.getElementById('finalLevel').textContent = level;
             document.getElementById('finalLines').textContent = lines;
-
-            // 랭킹에 추가
-            // postScore(userName,score);
         }
 
         const postScore = async () => {
@@ -518,7 +515,7 @@
 
         // 화면 업데이트
         function updateDisplay() {
-            scoreDisplay.textContent = score.toLocaleString();
+            scoreDisplay.textContent = score
             levelDisplay.textContent = level;
             linesDisplay.textContent = lines;
         }
