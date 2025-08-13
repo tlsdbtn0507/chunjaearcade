@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>테트리스 - 플래시게임 플랫폼</title>
     <link rel="stylesheet" href="./css/tetris.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="tetris-container">
@@ -72,6 +74,9 @@
     </div>
 
     <script>
+        const supabaseUrl = 'https://xgxajgqqqirzhohqwtyc.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneGFqZ3FxcWlyemhvaHF3dHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQyOTc4MjQsImV4cCI6MjA2OTg3MzgyNH0.atWmo_9wUpEZFOjuPX0zeXRwIh2UVtI5yoJOF9BKBOo';
+        const client = supabase.createClient(supabaseUrl, supabaseKey);
         // 게임 상수
         const BOARD_WIDTH = 10;
         const BOARD_HEIGHT = 20;
@@ -142,6 +147,11 @@
         let startBtn, pauseBtn;
         let scoreDisplay, levelDisplay, linesDisplay;
         let gameOverDiv, pauseOverlay;
+
+        const isNicknameValid = (nickname) => {
+          const regex = /^[a-zA-Z]{1,12}$/;
+          return regex.test(nickname);
+        }
 
         // 게임 초기화
         function init() {
@@ -363,9 +373,48 @@
         function gameOver() {
             gameRunning = false;
             gameOverDiv.style.display = 'block';
+            const userName = getUserName();
             document.getElementById('finalScore').textContent = score;
             document.getElementById('finalLevel').textContent = level;
             document.getElementById('finalLines').textContent = lines;
+
+            // 랭킹에 추가
+            postScore(userName,score);
+        }
+
+        const postScore = async (userName,userScore) => {
+            const { data, error } = await client
+                .from('tetris')
+                .insert([{ userName, userScore }]);
+
+            if (error) {
+                console.error('랭킹 데이터 저장 실패:', error);
+                alert('랭킹 데이터를 저장하는 데 실패했습니다.');
+            } else {
+              const input = confirm('랭킹이 저장되었습니다! 랭킹 페이지로 이동하시겠어요?');
+              if (input) {
+                window.location.href = 'rankings.html?game=tetris';
+              } else {
+                window.location.href = 'index.html';
+              }
+            }
+        };
+
+
+
+        // 사용자 이름 입력
+        function getUserName() {
+            const userName = prompt("게임 오버! 이름을 입력하세요:");
+            if (!userName) {
+              alert('닉네임을 입력해주세요!');
+              return;
+            }
+            if (!isNicknameValid(userName) || userName === null) {
+              alert("이름은 영어로 12자 이내로 작성해주세요.");
+              return getUserName(); // 재귀 호출로 다시 입력 받기
+            } else {
+              return userName
+            }
         }
 
         // 게임 재시작

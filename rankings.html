@@ -87,7 +87,7 @@
       const {title} = GAME_OBJECTS.find(obj => obj.gameName === game);
       document.querySelector('.ranking-header').innerText = 
       `Rankings of ${title}`;
-      if (game === 'catchMe' || game === 'ddongpihagi') {
+      if (game === 'catchMe' || game === 'ddongpihagi' || game === 'tetris') {
         document.querySelector('.score').innerText = 'Score';
       } else {
         document.querySelector('.score').innerText = 'Time';
@@ -103,6 +103,8 @@
         return "";
       } else if(game === "ddongpihagi"){
         return "";
+      } else if(game === "tetris"){
+        return "";
       } else if(game === "reactionTest"){
         return "ms";
       }
@@ -117,7 +119,7 @@
     };
 
     const assignRanks = (players) => {
-      if(game === 'catchMe' || game === 'ddongpihagi') {
+      if(game === 'catchMe' || game === 'ddongpihagi' || game === 'tetris') {
         players.sort((a, b) => b.time - a.time);
       } else {
         players.sort((a, b) => a.time - b.time);
@@ -141,10 +143,14 @@
       row.innerHTML = `
         <td>${stand}</td>
         <td>${name}</td>
-        <td>${time}</td>
+        <td>${thousansandSeparator(time)}</td>
         <td>${date}</td>
       `;
       document.querySelector(".ranking-table-body").appendChild(row);
+    };
+
+    const thousansandSeparator = (num) => {
+      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
 
     const fetchRankings = async (game) => {

@@ -85,6 +85,8 @@
           return "";
         } else if(game === "ddongpihagi"){
           return "";
+        } else if(game === "tetris"){
+          return "";
         } else if(game === "reactionTest"){
           return "ms";
         }
@@ -95,7 +97,7 @@
         const {data,error} = await client
           .from(gameUrl)
           .select('*')
-          .order('userScore', { ascending: gameUrl !== 'catchMe' && gameUrl !== 'ddongpihagi' })
+          .order('userScore', { ascending: gameUrl !== 'catchMe' && gameUrl !== 'ddongpihagi' && gameUrl !== 'tetris' })
           .limit(3);
 
         if (error) {
