@@ -19,7 +19,10 @@
                     <p>최종 점수: <span id="finalScore">0</span></p>
                     <p>레벨: <span id="finalLevel">1</span></p>
                     <p>줄 수: <span id="finalLines">0</span></p>
-                    <button class="game-btn" onclick="restartGame()">다시 시작</button>
+                    <div class="userNameInputWrapper">
+                      <input class="userNameInput" placeholder="닉네임을 입력해주세요">
+                    </div>
+                    <button class="game-btn" onclick="postScore()">점수 제출</button>
                 </div>
                 <div class="pause-overlay" id="pauseOverlay">
                     <h3>일시정지</h3>
@@ -373,49 +376,40 @@
         function gameOver() {
             gameRunning = false;
             gameOverDiv.style.display = 'block';
-            const userName = getUserName();
-            document.getElementById('finalScore').textContent = score;
+            // const userName = getUserName();
+            
             document.getElementById('finalLevel').textContent = level;
             document.getElementById('finalLines').textContent = lines;
 
             // 랭킹에 추가
-            postScore(userName,score);
+            // postScore(userName,score);
         }
 
-        const postScore = async (userName,userScore) => {
-            const { data, error } = await client
-                .from('tetris')
-                .insert([{ userName, userScore }]);
+        const postScore = async () => {
+          const userName = document.querySelector('.userNameInput').value;
+          const userScore = document.getElementById('finalScore').textContent;
 
-            if (error) {
-                console.error('랭킹 데이터 저장 실패:', error);
-                alert('랭킹 데이터를 저장하는 데 실패했습니다.');
-            } else {
-              const input = confirm('랭킹이 저장되었습니다! 랭킹 페이지로 이동하시겠어요?');
-              if (input) {
-                window.location.href = 'rankings.html?game=tetris';
-              } else {
-                window.location.href = 'index.html';
-              }
-            }
-        };
-
-
-
-        // 사용자 이름 입력
-        function getUserName() {
-            const userName = prompt("게임 오버! 이름을 입력하세요:");
-            if (!userName) {
-              alert('닉네임을 입력해주세요!');
+          if (!isNicknameValid(userName) || userName.length === 0) {
+            alert('닉네임은 영어로 12자 이내로 입력해주세요.');
+            return;
+          }
+          
+          const { data, error } = await client
+              .from('tetris')
+              .insert([{ userName, userScore }]);
+          if (error) {
+              console.error('랭킹 데이터 저장 실패:', error);
+              alert('랭킹 데이터를 저장하는 데 실패했습니다.');
               return;
-            }
-            if (!isNicknameValid(userName) || userName === null) {
-              alert("이름은 영어로 12자 이내로 작성해주세요.");
-              return getUserName(); // 재귀 호출로 다시 입력 받기
+          } else {
+            const input = confirm('랭킹이 저장되었습니다! 랭킹 페이지로 이동하시겠어요?');
+            if (input) {
+              window.location.href = 'rankings.html?game=tetris';
             } else {
-              return userName
+              window.location.href = 'index.html';
             }
-        }
+          }
+        };
 
         // 게임 재시작
         function restartGame() {
